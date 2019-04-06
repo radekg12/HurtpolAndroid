@@ -1,3 +1,18 @@
 <resources>
-    <string name="app_name">Hurtpol Android</string>
+    <string name="app_name">Hurtpol</string>
+    <string name="title_activity_card_menu">CardMenuActivity</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="email">E-mail</string>
+    <string name="password">Hasło</string>
+    <string name="login">Zaloguj</string>
+    <string name="create_new_account">Nie masz konta? Zarejestruj się</string>
+    <string name="login_if_you_a_member">Posiadasz już konto? Zaloguj się</string>
+    <string name="name">Nazwa</string>
+    <string name="logout">Wyloguj</string>
 </resources>
