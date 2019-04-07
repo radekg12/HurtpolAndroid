@@ -1,5 +1,6 @@
 package com.example.hurtpolandroid.ui.cardmenu
 
+import android.content.Intent
 import android.os.Bundle
 import com.google.android.material.navigation.NavigationView
 import androidx.core.view.GravityCompat
@@ -8,6 +9,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import com.example.hurtpolandroid.R
+import com.example.hurtpolandroid.ui.OperationType
+import com.example.hurtpolandroid.ui.scanner.ScannerActivity
 import kotlinx.android.synthetic.main.activity_card_menu.*
 import kotlinx.android.synthetic.main.app_bar_card_menu.*
 import kotlinx.android.synthetic.main.content_card_menu.*
@@ -28,11 +31,18 @@ class CardMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         nav_view.setNavigationItemSelectedListener(this)
 
         card1.setOnClickListener {
-            //TODO add card1 click action
+            changeActivity(OperationType.TAKE)
         }
-        card1.setOnClickListener {
-            //TODO add card2 click action
+        card2.setOnClickListener {
+            changeActivity(OperationType.PUT)
         }
+    }
+
+    fun changeActivity(operation: OperationType){
+        val intent = Intent(this, ScannerActivity::class.java).apply {
+            putExtra("Operation", operation)
+        }
+        startActivity(intent)
     }
 
     override fun onBackPressed() {
@@ -53,10 +63,10 @@ class CardMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         // Handle navigation view item clicks here.
         when (item.itemId) {
             R.id.nav_camera -> {
-                // Handle the camera action
+                changeActivity(OperationType.TAKE)
             }
             R.id.nav_gallery -> {
-
+                changeActivity(OperationType.PUT)
             }
             R.id.logout -> {
 

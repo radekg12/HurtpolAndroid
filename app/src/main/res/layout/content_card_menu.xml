@@ -27,7 +27,7 @@
             <androidx.appcompat.widget.AppCompatImageView
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:background="@drawable/card1"/>
+                    android:background="@drawable/take"/>
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -64,7 +64,7 @@
             <androidx.appcompat.widget.AppCompatImageView
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:background="@drawable/card2"/>
+                    android:background="@drawable/put"/>
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
