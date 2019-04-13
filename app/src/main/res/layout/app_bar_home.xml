@@ -5,7 +5,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.worker.cardmenu.CardMenuActivity">
+        tools:context=".ui.customer.home.HomeActivity">
 
     <com.google.android.material.appbar.AppBarLayout
             android:layout_height="wrap_content"
@@ -21,6 +21,6 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/content_card_menu"/>
+    <include layout="@layout/content_home"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

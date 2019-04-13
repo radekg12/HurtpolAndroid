@@ -1,4 +1,4 @@
-package com.example.hurtpolandroid.ui.scanner
+package com.example.hurtpolandroid.ui.worker.scanner
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,7 +6,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.hurtpolandroid.R
-import com.example.hurtpolandroid.ui.OperationType
+import com.example.hurtpolandroid.ui.worker.OperationType
 import com.google.zxing.integration.android.IntentIntegrator
 import kotlinx.android.synthetic.main.activity_scanner.*
 
@@ -16,18 +16,19 @@ class ScannerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_scanner)
 
-        val operationType=intent.extras.getSerializable("Operation")
-        if (operationType==OperationType.TAKE){
+        val operationType = intent.extras.getSerializable("Operation")
+        if (operationType == OperationType.TAKE) {
             imageView.setImageDrawable(resources.getDrawable(R.drawable.take))
-        }
-        else{
+            opetation_name.text = getString(R.string.take_title)
+        } else {
             imageView.setImageDrawable(resources.getDrawable(R.drawable.put))
+            opetation_name.text = getString(R.string.put_title)
         }
 
         btn_scan.setOnClickListener {
             val scanner = IntentIntegrator(this)
             scanner.setBeepEnabled(false)
-            scanner.initiateScan();
+            scanner.initiateScan()
         }
 
         btn_confirm.setOnClickListener {

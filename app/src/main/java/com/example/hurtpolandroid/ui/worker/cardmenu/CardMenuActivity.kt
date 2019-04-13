@@ -1,16 +1,16 @@
-package com.example.hurtpolandroid.ui.cardmenu
+package com.example.hurtpolandroid.ui.worker.cardmenu
 
 import android.content.Intent
 import android.os.Bundle
-import com.google.android.material.navigation.NavigationView
-import androidx.core.view.GravityCompat
-import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.GravityCompat
 import com.example.hurtpolandroid.R
-import com.example.hurtpolandroid.ui.OperationType
-import com.example.hurtpolandroid.ui.scanner.ScannerActivity
+import com.example.hurtpolandroid.ui.worker.OperationType
+import com.example.hurtpolandroid.ui.worker.scanner.ScannerActivity
+import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_card_menu.*
 import kotlinx.android.synthetic.main.app_bar_card_menu.*
 import kotlinx.android.synthetic.main.content_card_menu.*
@@ -38,7 +38,7 @@ class CardMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         }
     }
 
-    fun changeActivity(operation: OperationType){
+    fun changeActivity(operation: OperationType) {
         val intent = Intent(this, ScannerActivity::class.java).apply {
             putExtra("Operation", operation)
         }
@@ -49,7 +49,7 @@ class CardMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
             drawer_layout.closeDrawer(GravityCompat.START)
         } else {
-            super.onBackPressed()
+            moveTaskToBack(true)
         }
     }
 
@@ -62,10 +62,10 @@ class CardMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         // Handle navigation view item clicks here.
         when (item.itemId) {
-            R.id.nav_camera -> {
+            R.id.nav_products -> {
                 changeActivity(OperationType.TAKE)
             }
-            R.id.nav_gallery -> {
+            R.id.nav_cart -> {
                 changeActivity(OperationType.PUT)
             }
             R.id.logout -> {

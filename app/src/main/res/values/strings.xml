@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Hurtpol</string>
-    <string name="title_activity_card_menu">CardMenuActivity</string>
+    <string name="title_activity_card_menu">Pracownik - menu</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
@@ -12,7 +12,24 @@
     <string name="password">Hasło</string>
     <string name="login">Zaloguj</string>
     <string name="create_new_account">Nie masz konta? Zarejestruj się</string>
+    <string name="create_account">Załóż konto</string>
     <string name="login_if_you_a_member">Posiadasz już konto? Zaloguj się</string>
     <string name="name">Nazwa</string>
     <string name="logout">Wyloguj</string>
+    <string name="take_title">Odbiór</string>
+    <string name="take_description">Odbierz towar</string>
+    <string name="put_title">Przekazanie</string>
+    <string name="put_description">Przekaż towar</string>
+    <string name="title_activity_home">HomeActivity</string>
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
+
+    <string name="action_example">Example action</string>
+    <string name="account">Konto</string>
+    <string name="products">Produkty</string>
+    <string name="cart">Koszyk</string>
+    <string name="productCode">Kod produktu</string>
+    <string name="count">Ilość</string>
+    <string name="save">Zapisz</string>
 </resources>
