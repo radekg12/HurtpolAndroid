@@ -33,15 +33,15 @@ class SignupActivity : AppCompatActivity() {
         btn_signup.isEnabled = false
         loadingProgressBar.visibility = View.VISIBLE
 
-        val name = input_name.getText().toString()
-        val email = input_email.getText().toString()
-        val password = input_password.getText().toString()
+        val name = input_name.text.toString()
+        val email = input_email.text.toString()
+        val password = input_password.text.toString()
 
     }
 
 
     fun onSignupSuccess() {
-        btn_signup.setEnabled(true)
+        btn_signup.isEnabled = true
         setResult(RESULT_OK, null)
         btn_signup.isEnabled = true
         loadingProgressBar.visibility = View.GONE
@@ -49,39 +49,39 @@ class SignupActivity : AppCompatActivity() {
     }
 
     fun onSignupFailed() {
-        Toast.makeText(getBaseContext(), "Logowanie nieudane", Toast.LENGTH_LONG).show()
+        Toast.makeText(baseContext, "Logowanie nieudane", Toast.LENGTH_LONG).show()
         btn_signup.isEnabled = true
         loadingProgressBar.visibility = View.GONE
     }
 
     fun validate(): Boolean {
-        var valid = true;
+        var valid = true
 
-        val name = input_name.getText().toString()
-        val email = input_email.getText().toString()
-        val password = input_password.getText().toString()
+        val name = input_name.text.toString()
+        val email = input_email.text.toString()
+        val password = input_password.text.toString()
 
         if (name.isEmpty() || name.length < 3) {
-            input_name.setError("Minimum 3 znaki")
+            input_name.error = "Minimum 3 znaki"
             valid = false
         } else {
-            input_name.setError(null)
+            input_name.error = null
         }
 
         if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            input_email.setError("Błędy adres e-mail")
+            input_email.error = "Błędy adres e-mail"
             valid = false
         } else {
-            input_email.setError(null)
+            input_email.error = null
         }
 
         if (password.isEmpty() || password.length < 4 || password.length > 10) {
-            input_password.setError("Od 4 do 10 znaków")
+            input_password.error = "Od 4 do 10 znaków"
             valid = false
         } else {
-            input_password.setError(null)
+            input_password.error = null
         }
 
-        return valid;
+        return valid
     }
 }
