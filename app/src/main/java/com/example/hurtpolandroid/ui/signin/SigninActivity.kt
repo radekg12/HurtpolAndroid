@@ -32,7 +32,7 @@ class SigninActivity : AppCompatActivity(), Callback<SigninResponse> {
         }
 
         link_signup.setOnClickListener {
-            val intent = Intent(getApplicationContext(), SignupActivity::class.java);
+            val intent = Intent(applicationContext, SignupActivity::class.java)
             startActivityForResult(intent, 0)
         }
 
@@ -75,7 +75,7 @@ class SigninActivity : AppCompatActivity(), Callback<SigninResponse> {
     fun login() {
 
         if (!validate())
-            onLoginFailed();
+            onLoginFailed()
 
         btn_login.isEnabled = false
         loadingProgressBar.visibility = View.VISIBLE
@@ -85,7 +85,7 @@ class SigninActivity : AppCompatActivity(), Callback<SigninResponse> {
     }
 
     override fun onFailure(call: Call<SigninResponse>, t: Throwable) {
-        onServerProblems();
+        onServerProblems()
     }
 
     override fun onResponse(call: Call<SigninResponse>, response: Response<SigninResponse>) {
@@ -99,12 +99,12 @@ class SigninActivity : AppCompatActivity(), Callback<SigninResponse> {
 
     fun onLoginSuccess(data: SigninResponse) {
         btn_login.isEnabled = true
-        if (data.authorities.map { it.roleName }.any { it.equals("ROLE_WORKER") }) {
+        if (data.authorities.map { it.roleName }.any { it == "ROLE_WORKER" }) {
             val intent = Intent(this, CardMenuActivity::class.java).apply {
                 putExtra("Token", data.accessToken)
             }
             startActivity(intent)
-        } else if (data.authorities.map { it.roleName }.any { it.equals("ROLE_USER") }) {
+        } else if (data.authorities.map { it.roleName }.any { it == "ROLE_USER" }) {
             val intent = Intent(this, HomeActivity::class.java).apply {
                 putExtra("Token", data.accessToken)
             }
@@ -113,13 +113,13 @@ class SigninActivity : AppCompatActivity(), Callback<SigninResponse> {
     }
 
     fun onLoginFailed() {
-        Toast.makeText(getBaseContext(), "Logowanie nieudane", Toast.LENGTH_LONG).show()
+        Toast.makeText(baseContext, "Logowanie nieudane", Toast.LENGTH_LONG).show()
         loadingProgressBar.visibility = View.GONE
         btn_login.isEnabled = true
     }
 
     private fun onServerProblems() {
-        Toast.makeText(getBaseContext(), "Błąd serwera", Toast.LENGTH_LONG).show()
+        Toast.makeText(baseContext, "Błąd serwera", Toast.LENGTH_LONG).show()
         loadingProgressBar.visibility = View.GONE
         btn_login.isEnabled = true
     }
@@ -134,14 +134,14 @@ class SigninActivity : AppCompatActivity(), Callback<SigninResponse> {
             input_email.error = "Błędy adres e-maill"
             valid = false
         } else {
-            input_email.setError(null)
+            input_email.error = null
         }
 
         if (password.isEmpty() || password.length < 4 || password.length > 10) {
-            input_password.setError("Od 4 do 10 znaków")
+            input_password.error = "Od 4 do 10 znaków"
             valid = false
         } else {
-            input_password.setError(null)
+            input_password.error = null
         }
 
         return valid
