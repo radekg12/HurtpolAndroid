@@ -1,5 +1,7 @@
 package com.example.hurtpolandroid.ui.model
 
+data class Content<T>(val content: List<T>)
+
 data class Product(
     val id: Int,
     val name: String,

@@ -7,7 +7,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 
 class HurtpolServiceGenerator {
-    private val BASE_URL = "http://192.168.43.245:8080/user-portal/auth/"
+    private val BASE_URL = "https://userportal.radekg96.com/"
 
     private val builder = Retrofit.Builder()
         .baseUrl(BASE_URL)

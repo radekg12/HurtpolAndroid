@@ -45,8 +45,8 @@ class SigninActivity : AppCompatActivity(), Callback<SigninResponse> {
                 else {
                     //TODO autologowanie, poprawic jak nowe logowanie bedzie na prod
                     val list = mutableListOf<Authority>()
-                    list.add(Authority("ROLE_WORKER"))
-//                    list.add(Authority("ROLE_USER"))
+//                    list.add(Authority("ROLE_WORKER"))
+                    list.add(Authority("ROLE_USER"))
                     val data = SigninResponse("ABC", "abc", true, list)
                     onLoginSuccess(data)
                 }

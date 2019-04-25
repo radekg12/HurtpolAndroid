@@ -23,4 +23,11 @@
             app:headerLayout="@layout/nav_header_home"
             app:menu="@menu/activity_home_drawer"/>
 
+    <LinearLayout android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:gravity="center"
+                  android:orientation="vertical"
+                  android:id="@+id/products_list">
+
+    </LinearLayout>
 </androidx.drawerlayout.widget.DrawerLayout>

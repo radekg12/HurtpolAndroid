@@ -1,15 +1,17 @@
 package com.example.hurtpolandroid.ui.customer.home
 
 import android.os.Bundle
+import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
-import androidx.core.widget.NestedScrollView
 import com.example.hurtpolandroid.R
+import com.example.hurtpolandroid.ui.model.Content
 import com.example.hurtpolandroid.ui.model.Product
 import com.example.hurtpolandroid.ui.service.ProductService
 import com.example.hurtpolandroid.ui.utils.HurtpolServiceGenerator
@@ -78,24 +80,27 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             .createService(ProductService::class.java)
 
         val context = this
-        val scrollView = findViewById<NestedScrollView>(R.id.drawer_layout)
+        val homeView = findViewById<LinearLayout>(R.id.products_list)
         logger.info("Getting products from API service")
         productService.getProducts()
-            .enqueue(object : Callback<List<Product>> {
-                override fun onResponse(call: Call<List<Product>>, response: Response<List<Product>>) {
-                    response.body()?.forEach { product ->
+            .enqueue(object : Callback<Content<Product>> {
+                override fun onResponse(call: Call<Content<Product>>, response: Response<Content<Product>>) {
+                    response.body()?.content?.forEach { product ->
+                        logger.info("Processing product with id " + product.id)
                         val productTextView = TextView(context)
                         productTextView.text =
                             java.lang.String.format("Name: %s\n Price: %d", product.name, product.unitPrice)
-                        scrollView.addView(productTextView)
+
                         productTextView.setOnClickListener(fun(it: View) {
-                            logger.info(java.lang.String.format("Product with id: %d\" has been clicked", product.id))
+                            logger.info(java.lang.String.format("Product with id: %d has been clicked", product.id))
                         })
+                        productTextView.gravity = Gravity.CENTER
+                        homeView.addView(productTextView)
                         productViews.add(productTextView)
                     }
                 }
 
-                override fun onFailure(call: Call<List<Product>>, t: Throwable) = t.printStackTrace()
+                override fun onFailure(call: Call<Content<Product>>, t: Throwable) = t.printStackTrace()
             })
     }
 }
