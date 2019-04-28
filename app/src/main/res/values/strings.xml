@@ -34,5 +34,10 @@
     <string name="save">Zapisz</string>
     <string name="prev_button_text">Poprzednia</string>
     <string name="next_button_text">Następna</string>
-
+    <string name="title_activity_product_detail">ProductDetailActivity</string>
+    <string name="empty_product_list">Brak produktów na wybranej stronie!</string>
+    <string name="null_product_id">Brak ID produktu!</string>
+    <string name="server_error">Błąd serwera, spróbuj ponownie.</string>
+    <string name="product_detail">Nazwa produktu: %1$s\nOpis: %2$s\nCena: %3$d</string>
+    <string name="product_image_desc">Zdjęcie produktu</string>
 </resources>

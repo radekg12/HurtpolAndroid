@@ -1,5 +1,6 @@
 package com.example.hurtpolandroid.ui.customer.home
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Gravity
 import android.view.Menu
@@ -8,6 +9,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
@@ -26,6 +28,9 @@ import java.util.logging.Logger
 
 class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
+    companion object {
+        const val PROUCT_ID_MESSAGE = "PRODUCT_ID"
+    }
     val logger = Logger.getLogger(HomeActivity::class.java.name)
     val productViews = ArrayList<TextView>()
     var currentPageNumber = 0
@@ -100,7 +105,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         val context = this
         val homeView = findViewById<LinearLayout>(R.id.products_list)
-        logger.info("Getting products from API service with pageNumber=${currentPageNumber}")
+        logger.info("Getting products from API service with pageNumber=$currentPageNumber")
         cleanProductList()
         productService.getProducts(currentPageNumber)
             .enqueue(object : Callback<Content<Product>> {
@@ -111,8 +116,9 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         productTextView.text =
                             java.lang.String.format("Name: ${product.name} Price: ${product.unitPrice}")
 
-                        productTextView.setOnClickListener(fun(it: View) {
+                        productTextView.setOnClickListener({
                             logger.info(java.lang.String.format("Product with id: ${product.id} has been clicked"))
+                            productOnClick(product.id)
                         })
                         productTextView.gravity = Gravity.CENTER
                         homeView.addView(productTextView)
@@ -120,14 +126,24 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     }
                     if(productViews.size == 0) {
                         val nonProductText = TextView(context)
-                        nonProductText.text = "Brak produktów na wybranej stronie!"
+                        nonProductText.text = getString(R.string.empty_product_list)
                         pageNumberMax = currentPageNumber
                         homeView.addView(nonProductText)
                     }
                 }
 
-                override fun onFailure(call: Call<Content<Product>>, t: Throwable) = t.printStackTrace()
+                override fun onFailure(call: Call<Content<Product>>, t: Throwable){
+                    Toast.makeText(context, getString(R.string.server_error), Toast.LENGTH_LONG).show()
+                    logger.warning(t.printStackTrace().toString())
+                }
             })
+    }
+
+    fun productOnClick(productID: Int) {
+            val intent = Intent(this, ProductDetailActivity::class.java).apply {
+                putExtra(PROUCT_ID_MESSAGE, productID)
+            }
+            startActivity(intent)
     }
 
     private fun cleanProductList() {
