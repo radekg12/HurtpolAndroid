@@ -32,4 +32,7 @@
     <string name="productCode">Kod produktu</string>
     <string name="count">Ilość</string>
     <string name="save">Zapisz</string>
+    <string name="prev_button_text">Poprzednia</string>
+    <string name="next_button_text">Następna</string>
+
 </resources>

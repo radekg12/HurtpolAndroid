@@ -5,6 +5,7 @@ import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -27,6 +28,8 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     val logger = Logger.getLogger(HomeActivity::class.java.name)
     val productViews = ArrayList<TextView>()
+    var currentPageNumber = 0
+    var pageNumberMax = 100
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +43,22 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toggle.syncState()
 
         nav_view.setNavigationItemSelectedListener(this)
+
+        val pageNumberText = findViewById<TextView>(R.id.page_number_text)
+        pageNumberText.text = currentPageNumber.toString()
+        val prevButton = findViewById<Button>(R.id.prev_page_button)
+        prevButton.setOnClickListener {
+            currentPageNumber = Math.max(currentPageNumber - 1, 0)
+            pageNumberText.text = currentPageNumber.toString()
+            getProducts()
+        }
+        val nextButton = findViewById<Button>(R.id.next_page_button)
+        nextButton.setOnClickListener{
+            currentPageNumber = Math.min(currentPageNumber + 1, pageNumberMax)
+            pageNumberText.text = currentPageNumber.toString()
+            getProducts()
+        }
+
         getProducts()
     }
 
@@ -81,26 +100,39 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         val context = this
         val homeView = findViewById<LinearLayout>(R.id.products_list)
-        logger.info("Getting products from API service")
-        productService.getProducts()
+        logger.info("Getting products from API service with pageNumber=${currentPageNumber}")
+        cleanProductList()
+        productService.getProducts(currentPageNumber)
             .enqueue(object : Callback<Content<Product>> {
                 override fun onResponse(call: Call<Content<Product>>, response: Response<Content<Product>>) {
                     response.body()?.content?.forEach { product ->
                         logger.info("Processing product with id " + product.id)
                         val productTextView = TextView(context)
                         productTextView.text =
-                            java.lang.String.format("Name: %s\n Price: %d", product.name, product.unitPrice)
+                            java.lang.String.format("Name: ${product.name} Price: ${product.unitPrice}")
 
                         productTextView.setOnClickListener(fun(it: View) {
-                            logger.info(java.lang.String.format("Product with id: %d has been clicked", product.id))
+                            logger.info(java.lang.String.format("Product with id: ${product.id} has been clicked"))
                         })
                         productTextView.gravity = Gravity.CENTER
                         homeView.addView(productTextView)
                         productViews.add(productTextView)
                     }
+                    if(productViews.size == 0) {
+                        val nonProductText = TextView(context)
+                        nonProductText.text = "Brak produktów na wybranej stronie!"
+                        pageNumberMax = currentPageNumber
+                        homeView.addView(nonProductText)
+                    }
                 }
 
                 override fun onFailure(call: Call<Content<Product>>, t: Throwable) = t.printStackTrace()
             })
+    }
+
+    private fun cleanProductList() {
+        val homeView = findViewById<LinearLayout>(R.id.products_list)
+        homeView.removeAllViewsInLayout()
+        productViews.clear()
     }
 }
