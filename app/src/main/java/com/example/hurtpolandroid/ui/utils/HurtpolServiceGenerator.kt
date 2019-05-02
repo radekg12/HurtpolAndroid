@@ -1,6 +1,8 @@
 package com.example.hurtpolandroid.ui.utils
 
+import android.content.Context
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -8,6 +10,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class HurtpolServiceGenerator {
     private val BASE_URL = "https://userportal.radekg96.com/"
+//    private val BASE_URL = "http://192.168.0.51:8080/user-portal/"
+    var logging = HttpLoggingInterceptor();
 
     private val builder = Retrofit.Builder()
         .baseUrl(BASE_URL)
@@ -25,13 +29,16 @@ class HurtpolServiceGenerator {
         return retrofit.create(serviceClass)
     }
 
-    fun <S> createService(serviceClass: Class<S>, token: String?): S {
-        if (token != null) {
+    fun <S> createServiceWithToken(serviceClass: Class<S>, context: Context): S {
+        val token = getToken(context)
+        logging.setLevel(HttpLoggingInterceptor.Level.HEADERS);
+        httpClient.addInterceptor(logging)
+        if (token != "") {
             httpClient.interceptors().clear()
             httpClient.addInterceptor { chain ->
                 val original = chain.request()
                 val builder1 = original.newBuilder()
-                    .header("Authorization", token)
+                    .header("Authorization", "Bearer " + token)
                 val request = builder1.build()
                 chain.proceed(request)
             }
@@ -40,4 +47,11 @@ class HurtpolServiceGenerator {
         }
         return retrofit.create(serviceClass)
     }
+
+    fun getToken(context: Context): String {
+        val preferences = context.getSharedPreferences("myPrefs", Context.MODE_PRIVATE)
+        return preferences.getString("token", "")
+    }
+
+
 }

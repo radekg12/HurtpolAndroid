@@ -1,87 +1,118 @@
 package com.example.hurtpolandroid.ui.signup
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.hurtpolandroid.R
+import com.example.hurtpolandroid.ui.signin.SigninActivity
 import kotlinx.android.synthetic.main.activity_signup.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
-class SignupActivity : AppCompatActivity() {
+class SignupActivity : AppCompatActivity(), Callback<Boolean> {
+
+    val signupViewModel = SignupViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_signup)
+        loadingProgressBar.visibility = View.GONE
 
         btn_signup.setOnClickListener {
             signup()
         }
 
         link_login.setOnClickListener {
-            // Finish the registration screen and return to the Login activity
-//            finish();
+            val intent = Intent(applicationContext, SigninActivity::class.java)
+            startActivityForResult(intent, 0)
         }
+
     }
 
     fun signup() {
 
-        if (!validate()) {
-            onSignupFailed()
-            return
-        }
+        if (!validate())
+            onSignupFailed();
 
         btn_signup.isEnabled = false
         loadingProgressBar.visibility = View.VISIBLE
 
-        val name = input_name.getText().toString()
-        val email = input_email.getText().toString()
-        val password = input_password.getText().toString()
+        val firstname = input_firstname.text.toString()
+        val lastname = input_lastname.text.toString()
+        val email = input_email.text.toString()
+        val password = input_password.text.toString()
 
+        signupViewModel.registration(firstname, lastname, email, password).enqueue(this)
+    }
+
+    override fun onFailure(call: Call<Boolean>, t: Throwable) {
+        onSignupFailed()
+    }
+
+    override fun onResponse(call: Call<Boolean>, response: Response<Boolean>) {
+        if (response.isSuccessful) {
+            onSignupSuccess()
+        } else {
+            onSignupFailed()
+        }
     }
 
 
     fun onSignupSuccess() {
-        btn_signup.setEnabled(true)
+        btn_signup.isEnabled = true
         setResult(RESULT_OK, null)
         btn_signup.isEnabled = true
         loadingProgressBar.visibility = View.GONE
-//        finish();
+        Toast.makeText(baseContext, "Rejestracja zakończona powodzeniem", Toast.LENGTH_LONG).show()
+        val intent = Intent(applicationContext, SigninActivity::class.java)
+        startActivityForResult(intent, 0)
     }
 
     fun onSignupFailed() {
-        Toast.makeText(getBaseContext(), "Logowanie nieudane", Toast.LENGTH_LONG).show()
+        Toast.makeText(baseContext, "Rejestracja nieudana", Toast.LENGTH_LONG).show()
         btn_signup.isEnabled = true
         loadingProgressBar.visibility = View.GONE
     }
 
     fun validate(): Boolean {
-        var valid = true;
+        var valid = true
 
-        val name = input_name.getText().toString()
-        val email = input_email.getText().toString()
-        val password = input_password.getText().toString()
+        val firstname = input_firstname.text.toString()
+        val lastname = input_lastname.text.toString()
+        val email = input_email.text.toString()
+        val password = input_password.text.toString()
 
-        if (name.isEmpty() || name.length < 3) {
-            input_name.setError("Minimum 3 znaki")
+        if (firstname.isEmpty() || firstname.length < 3) {
+            input_firstname.error = "Minimum 3 znaki"
             valid = false
         } else {
-            input_name.setError(null)
+            input_firstname.error = null
+        }
+
+        if (lastname.isEmpty() || lastname.length < 3) {
+            input_lastname.error = "Minimum 3 znaki"
+            valid = false
+        } else {
+            input_lastname.error = null
         }
 
         if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            input_email.setError("Błędy adres e-mail")
+            input_email.error = "Błędy adres e-mail"
             valid = false
         } else {
-            input_email.setError(null)
+            input_email.error = null
         }
 
         if (password.isEmpty() || password.length < 4 || password.length > 10) {
-            input_password.setError("Od 4 do 10 znaków")
+            input_password.error = "Od 4 do 10 znaków"
             valid = false
         } else {
-            input_password.setError(null)
+            input_password.error = null
         }
 
-        return valid;
+        return valid
     }
 }

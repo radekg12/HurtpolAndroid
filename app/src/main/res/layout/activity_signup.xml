@@ -2,7 +2,7 @@
 <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="fill_parent" xmlns:app="http://schemas.android.com/apk/res-auto"
         android:fitsSystemWindows="true">
 
     <LinearLayout
@@ -22,20 +22,40 @@
         <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp">
-            <EditText android:id="@+id/input_name"
+            <EditText android:id="@+id/input_firstname"
                       android:layout_width="match_parent"
                       android:layout_height="wrap_content"
                       android:inputType="textCapWords"
-                      android:hint="@string/name" />
+                      android:hint="@string/firstname" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp">
+            <EditText android:id="@+id/input_lastname"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:inputType="textCapWords"
+                      android:hint="@string/lastname" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Email Label -->
         <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp">
             <EditText android:id="@+id/input_email"
@@ -49,6 +69,10 @@
         <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                app:passwordToggleEnabled="true"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp">
             <EditText android:id="@+id/input_password"
@@ -65,6 +89,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="24dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
                 android:padding="12dp"
                 android:text="@string/create_account"/>
 
