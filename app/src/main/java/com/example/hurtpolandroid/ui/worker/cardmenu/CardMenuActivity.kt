@@ -1,21 +1,35 @@
 package com.example.hurtpolandroid.ui.worker.cardmenu
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.EditText
+import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import com.example.hurtpolandroid.R
+import com.example.hurtpolandroid.ui.signin.SigninActivity
 import com.example.hurtpolandroid.ui.worker.OperationType
+import com.example.hurtpolandroid.ui.worker.cardmenu.model.CustomerDTO
 import com.example.hurtpolandroid.ui.worker.scanner.ScannerActivity
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_card_menu.*
 import kotlinx.android.synthetic.main.app_bar_card_menu.*
 import kotlinx.android.synthetic.main.content_card_menu.*
+import kotlinx.android.synthetic.main.nav_header_card_menu.*
+import kotlinx.android.synthetic.main.nav_header_home.*
+import kotlinx.android.synthetic.main.nav_header_home.view.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
-class CardMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+
+
+
+class CardMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, Callback<CustomerDTO> {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,10 +39,11 @@ class CardMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         val toggle = ActionBarDrawerToggle(
             this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
         )
+
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
 
-        nav_view.setNavigationItemSelectedListener(this)
+        nav_view_worker.setNavigationItemSelectedListener(this)
 
         card1.setOnClickListener {
             changeActivity(OperationType.TAKE)
@@ -36,6 +51,7 @@ class CardMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         card2.setOnClickListener {
             changeActivity(OperationType.PUT)
         }
+        getUserData()
     }
 
     fun changeActivity(operation: OperationType) {
@@ -43,6 +59,23 @@ class CardMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
             putExtra("Operation", operation)
         }
         startActivity(intent)
+    }
+
+    fun getUserData() {
+        var cardMenuViewModel = CardMenuViewModel(this)
+        cardMenuViewModel.getUser().enqueue(this)
+    }
+
+    override fun onFailure(call: Call<CustomerDTO>, t: Throwable) {
+        println("blad")
+    }
+
+    override fun onResponse(call: Call<CustomerDTO>, response: Response<CustomerDTO>) {
+        if (response.isSuccessful) {
+            val fullName = response.body()?.firstName + " " + response.body()?.lastName
+            worker_name.setText(fullName)
+            worker_email.setText(response.body()?.email)
+        }
     }
 
     override fun onBackPressed() {
@@ -69,7 +102,11 @@ class CardMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                 changeActivity(OperationType.PUT)
             }
             R.id.logout -> {
-
+                val intent = Intent(this, SigninActivity::class.java).apply {
+                    val preferences = getSharedPreferences("myPrefs", Context.MODE_PRIVATE)
+                    preferences.edit().remove("token").apply()
+                }
+                startActivity(intent)
             }
         }
 

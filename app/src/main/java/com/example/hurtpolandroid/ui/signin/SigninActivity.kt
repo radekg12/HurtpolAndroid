@@ -1,5 +1,6 @@
 package com.example.hurtpolandroid.ui.signin
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -8,9 +9,11 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.auth0.android.jwt.JWT
 import com.example.hurtpolandroid.R
 import com.example.hurtpolandroid.ui.customer.home.HomeActivity
 import com.example.hurtpolandroid.ui.signin.domain.model.Authority
+import com.example.hurtpolandroid.ui.signin.domain.model.Role
 import com.example.hurtpolandroid.ui.signin.domain.model.SigninResponse
 import com.example.hurtpolandroid.ui.signup.SignupActivity
 import com.example.hurtpolandroid.ui.worker.cardmenu.CardMenuActivity
@@ -19,9 +22,10 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+
 class SigninActivity : AppCompatActivity(), Callback<SigninResponse> {
 
-    val loginViewModel = SigninViewModel()
+    val signinViewModel = SigninViewModel(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,14 +44,16 @@ class SigninActivity : AppCompatActivity(), Callback<SigninResponse> {
         object : CountDownTimer(3000, 1000) {
             override fun onFinish() {
                 loadingProgressBar.visibility = View.GONE
-                if (!loginViewModel.isLogged())
+                val token = signinViewModel.getToken()
+                if (!signinViewModel.isLogged(token))
                     slideUp(bookIconImageView)
                 else {
                     //TODO autologowanie, poprawic jak nowe logowanie bedzie na prod
+                    var jwt = JWT(token)
                     val list = mutableListOf<Authority>()
-//                    list.add(Authority("ROLE_WORKER"))
-                    list.add(Authority("ROLE_USER"))
-                    val data = SigninResponse("ABC", "abc", true, list)
+                    list.add(Authority(jwt.claims.get("auth")?.asString().toString()))
+//                    list.add(Authority("ROLE_USER"))
+                    val data = SigninResponse(jwt.signature, "Bearer", true, list)
                     onLoginSuccess(data)
                 }
             }
@@ -75,13 +81,13 @@ class SigninActivity : AppCompatActivity(), Callback<SigninResponse> {
     fun login() {
 
         if (!validate())
-            onLoginFailed()
+            onLoginFailed();
 
         btn_login.isEnabled = false
         loadingProgressBar.visibility = View.VISIBLE
         val email = input_email.text.toString()
         val password = input_password.text.toString()
-        loginViewModel.login(email, password).enqueue(this)
+        signinViewModel.login(email, password).enqueue(this)
     }
 
     override fun onFailure(call: Call<SigninResponse>, t: Throwable) {
@@ -91,6 +97,7 @@ class SigninActivity : AppCompatActivity(), Callback<SigninResponse> {
     override fun onResponse(call: Call<SigninResponse>, response: Response<SigninResponse>) {
         if (response.isSuccessful) {
             val data = response.body() as SigninResponse
+            signinViewModel.saveToken( response.body()?.accessToken)
             onLoginSuccess(data)
         } else {
             onLoginFailed()
@@ -99,12 +106,12 @@ class SigninActivity : AppCompatActivity(), Callback<SigninResponse> {
 
     fun onLoginSuccess(data: SigninResponse) {
         btn_login.isEnabled = true
-        if (data.authorities.map { it.roleName }.any { it == "ROLE_WORKER" }) {
+        if (data.authorities.map { it.roleName }.any { it == Role.ROLE_ADMIN.name }) {
             val intent = Intent(this, CardMenuActivity::class.java).apply {
                 putExtra("Token", data.accessToken)
             }
             startActivity(intent)
-        } else if (data.authorities.map { it.roleName }.any { it == "ROLE_USER" }) {
+        } else if (data.authorities.map { it.roleName }.any { it == Role.ROLE_USER.name }) {
             val intent = Intent(this, HomeActivity::class.java).apply {
                 putExtra("Token", data.accessToken)
             }
