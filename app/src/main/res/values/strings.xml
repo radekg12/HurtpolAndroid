@@ -32,4 +32,6 @@
     <string name="productCode">Kod produktu</string>
     <string name="count">Ilość</string>
     <string name="save">Zapisz</string>
+    <string name="firstname">Imię</string>
+    <string name="lastname">Nazwisko</string>
 </resources>

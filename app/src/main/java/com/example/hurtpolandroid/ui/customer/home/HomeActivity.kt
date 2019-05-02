@@ -1,5 +1,7 @@
 package com.example.hurtpolandroid.ui.customer.home
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -7,6 +9,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import com.example.hurtpolandroid.R
+import com.example.hurtpolandroid.ui.signin.SigninActivity
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.app_bar_home.*
@@ -51,7 +54,11 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             }
             R.id.nav_logout -> {
-
+                val intent = Intent(this, SigninActivity::class.java).apply {
+                    val preferences = getSharedPreferences("myPrefs", Context.MODE_PRIVATE)
+                    preferences.edit().remove("token").apply()
+                }
+                startActivity(intent)
             }
         }
 
