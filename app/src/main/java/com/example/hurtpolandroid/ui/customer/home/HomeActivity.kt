@@ -2,13 +2,10 @@ package com.example.hurtpolandroid.ui.customer.home
 
 import android.content.Context
 import android.content.Intent
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -22,8 +19,6 @@ import com.example.hurtpolandroid.ui.model.Product
 import com.example.hurtpolandroid.ui.service.ProductService
 import com.example.hurtpolandroid.ui.utils.HurtpolServiceGenerator
 import com.example.hurtpolandroid.ui.signin.SigninActivity
-import com.example.hurtpolandroid.ui.worker.scanner.Product
-import com.example.hurtpolandroid.ui.worker.scanner.service.ProductService
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.app_bar_home.*
