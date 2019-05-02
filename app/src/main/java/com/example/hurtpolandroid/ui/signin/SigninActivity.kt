@@ -1,6 +1,5 @@
 package com.example.hurtpolandroid.ui.signin
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -12,9 +11,9 @@ import androidx.appcompat.app.AppCompatActivity
 import com.auth0.android.jwt.JWT
 import com.example.hurtpolandroid.R
 import com.example.hurtpolandroid.ui.customer.home.HomeActivity
-import com.example.hurtpolandroid.ui.signin.domain.model.Authority
-import com.example.hurtpolandroid.ui.signin.domain.model.Role
-import com.example.hurtpolandroid.ui.signin.domain.model.SigninResponse
+import com.example.hurtpolandroid.ui.model.Authority
+import com.example.hurtpolandroid.ui.model.Role
+import com.example.hurtpolandroid.ui.model.SigninResponse
 import com.example.hurtpolandroid.ui.signup.SignupActivity
 import com.example.hurtpolandroid.ui.worker.cardmenu.CardMenuActivity
 import kotlinx.android.synthetic.main.activity_signin.*

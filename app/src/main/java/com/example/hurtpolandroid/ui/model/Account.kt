@@ -1,3 +1,3 @@
-package com.example.hurtpolandroid.ui.signup.domain.model
+package com.example.hurtpolandroid.ui.model
 
 data class Account(val firstName: String, val lastName: String, val email: String, val password: String)

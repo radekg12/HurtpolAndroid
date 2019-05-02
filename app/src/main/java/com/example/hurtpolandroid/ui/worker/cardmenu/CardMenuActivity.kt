@@ -5,23 +5,19 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.EditText
-import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import com.example.hurtpolandroid.R
 import com.example.hurtpolandroid.ui.signin.SigninActivity
 import com.example.hurtpolandroid.ui.worker.OperationType
-import com.example.hurtpolandroid.ui.worker.cardmenu.model.CustomerDTO
+import com.example.hurtpolandroid.ui.model.CustomerDTO
 import com.example.hurtpolandroid.ui.worker.scanner.ScannerActivity
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_card_menu.*
 import kotlinx.android.synthetic.main.app_bar_card_menu.*
 import kotlinx.android.synthetic.main.content_card_menu.*
 import kotlinx.android.synthetic.main.nav_header_card_menu.*
-import kotlinx.android.synthetic.main.nav_header_home.*
-import kotlinx.android.synthetic.main.nav_header_home.view.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -73,8 +69,8 @@ class CardMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     override fun onResponse(call: Call<CustomerDTO>, response: Response<CustomerDTO>) {
         if (response.isSuccessful) {
             val fullName = response.body()?.firstName + " " + response.body()?.lastName
-            worker_name.setText(fullName)
-            worker_email.setText(response.body()?.email)
+            worker_name.text = fullName
+            worker_email.text = response.body()?.email
         }
     }
 

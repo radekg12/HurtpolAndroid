@@ -9,6 +9,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.hurtpolandroid.R
+import com.example.hurtpolandroid.ui.model.Product
 import com.example.hurtpolandroid.ui.worker.OperationType
 import com.google.zxing.integration.android.IntentIntegrator
 import kotlinx.android.synthetic.main.activity_scanner.*

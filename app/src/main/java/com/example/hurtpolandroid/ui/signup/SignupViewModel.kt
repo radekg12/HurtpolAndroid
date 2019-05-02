@@ -1,8 +1,8 @@
 package com.example.hurtpolandroid.ui.signup
 
 import androidx.lifecycle.ViewModel
-import com.example.hurtpolandroid.ui.signin.domain.service.AuthenticationService
-import com.example.hurtpolandroid.ui.signup.domain.model.Account
+import com.example.hurtpolandroid.ui.service.AuthenticationService
+import com.example.hurtpolandroid.ui.model.Account
 import com.example.hurtpolandroid.ui.utils.HurtpolServiceGenerator
 import retrofit2.Call
 

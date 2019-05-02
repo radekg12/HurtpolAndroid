@@ -14,10 +14,9 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import com.example.hurtpolandroid.R
+import com.example.hurtpolandroid.ui.customer.productDetail.ProductDetailActivity
 import com.example.hurtpolandroid.ui.model.Content
 import com.example.hurtpolandroid.ui.model.Product
-import com.example.hurtpolandroid.ui.service.ProductService
-import com.example.hurtpolandroid.ui.utils.HurtpolServiceGenerator
 import com.example.hurtpolandroid.ui.signin.SigninActivity
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_home.*
@@ -27,11 +26,11 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.util.logging.Logger
 
-class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
-
+class HomeActivity : AppCompatActivity(), Callback<Content<Product>>, NavigationView.OnNavigationItemSelectedListener {
     companion object {
         const val PROUCT_ID_MESSAGE = "PRODUCT_ID"
     }
+
     val logger = Logger.getLogger(HomeActivity::class.java.name)
     val productViews = ArrayList<TextView>()
     var currentPageNumber = 0
@@ -59,7 +58,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             getProducts()
         }
         val nextButton = findViewById<Button>(R.id.next_page_button)
-        nextButton.setOnClickListener{
+        nextButton.setOnClickListener {
             currentPageNumber = Math.min(currentPageNumber + 1, pageNumberMax)
             pageNumberText.text = currentPageNumber.toString()
             getProducts()
@@ -105,50 +104,45 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun getProducts() {
-        val productService = HurtpolServiceGenerator()
-            .createService(ProductService::class.java)
-
-        val context = this
-        val homeView = findViewById<LinearLayout>(R.id.products_list)
         logger.info("Getting products from API service with pageNumber=$currentPageNumber")
         cleanProductList()
-        productService.getProducts(currentPageNumber)
-            .enqueue(object : Callback<Content<Product>> {
-                override fun onResponse(call: Call<Content<Product>>, response: Response<Content<Product>>) {
-                    response.body()?.content?.forEach { product ->
-                        logger.info("Processing product with id " + product.id)
-                        val productTextView = TextView(context)
-                        productTextView.text =
-                            java.lang.String.format("Name: ${product.name} Price: ${product.unitPrice}")
+        val homeViewModel = HomeViewModel()
+        homeViewModel.getProducts(currentPageNumber).enqueue(this)
+    }
 
-                        productTextView.setOnClickListener({
-                            logger.info(java.lang.String.format("Product with id: ${product.id} has been clicked"))
-                            productOnClick(product.id)
-                        })
-                        productTextView.gravity = Gravity.CENTER
-                        homeView.addView(productTextView)
-                        productViews.add(productTextView)
-                    }
-                    if(productViews.size == 0) {
-                        val nonProductText = TextView(context)
-                        nonProductText.text = getString(R.string.empty_product_list)
-                        pageNumberMax = currentPageNumber
-                        homeView.addView(nonProductText)
-                    }
-                }
+    override fun onFailure(call: Call<Content<Product>>, t: Throwable) {
+        Toast.makeText(this, getString(R.string.server_error), Toast.LENGTH_LONG).show()
+        logger.warning(t.printStackTrace().toString())
+    }
 
-                override fun onFailure(call: Call<Content<Product>>, t: Throwable){
-                    Toast.makeText(context, getString(R.string.server_error), Toast.LENGTH_LONG).show()
-                    logger.warning(t.printStackTrace().toString())
-                }
-            })
+    override fun onResponse(call: Call<Content<Product>>, response: Response<Content<Product>>) {
+        response.body()?.content?.forEach { product ->
+            logger.info("Processing product with id " + product.id)
+            val productTextView = TextView(this)
+            productTextView.text =
+                java.lang.String.format("Name: ${product.name} Price: ${product.unitPrice}")
+
+            productTextView.setOnClickListener {
+                logger.info(java.lang.String.format("Product with id: ${product.id} has been clicked"))
+                productOnClick(product.id)
+            }
+            productTextView.gravity = Gravity.CENTER
+            products_list.addView(productTextView)
+            productViews.add(productTextView)
+        }
+        if (productViews.size == 0) {
+            val nonProductText = TextView(this)
+            nonProductText.text = getString(R.string.empty_product_list)
+            pageNumberMax = currentPageNumber
+            products_list.addView(nonProductText)
+        }
     }
 
     fun productOnClick(productID: Int) {
-            val intent = Intent(this, ProductDetailActivity::class.java).apply {
-                putExtra(PROUCT_ID_MESSAGE, productID)
-            }
-            startActivity(intent)
+        val intent = Intent(this, ProductDetailActivity::class.java).apply {
+            putExtra(PROUCT_ID_MESSAGE, productID)
+        }
+        startActivity(intent)
     }
 
     private fun cleanProductList() {

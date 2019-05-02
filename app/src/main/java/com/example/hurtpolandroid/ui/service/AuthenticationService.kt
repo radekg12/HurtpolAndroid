@@ -1,8 +1,8 @@
-package com.example.hurtpolandroid.ui.signin.domain.service
+package com.example.hurtpolandroid.ui.service
 
-import com.example.hurtpolandroid.ui.signin.domain.model.SigninResponse
-import com.example.hurtpolandroid.ui.signin.domain.model.UserDTO
-import com.example.hurtpolandroid.ui.signup.domain.model.Account
+import com.example.hurtpolandroid.ui.model.SigninResponse
+import com.example.hurtpolandroid.ui.model.UserDTO
+import com.example.hurtpolandroid.ui.model.Account
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.Headers

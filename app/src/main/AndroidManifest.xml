@@ -14,7 +14,7 @@
             android:theme="@style/AppTheme"
             android:usesCleartextTraffic="true">
         <activity
-                android:name=".ui.customer.home.ProductDetailActivity"
+                android:name="com.example.hurtpolandroid.ui.customer.productDetail.ProductDetailActivity"
                 android:label="@string/title_activity_product_detail"
                 android:parentActivityName=".ui.customer.home.HomeActivity"
                 android:theme="@style/AppTheme.NoActionBar">

@@ -1,12 +1,12 @@
-package com.example.hurtpolandroid.ui.worker.scanner.service
+package com.example.hurtpolandroid.ui.service
 
-import com.example.hurtpolandroid.ui.worker.scanner.Product
+import com.example.hurtpolandroid.ui.model.Product
 import retrofit2.Call
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-interface ProductService {
+interface WarehouseService {
     @POST("products/warehouse/take/{id}")
     fun take(@Path("id") id: Long, @Query("quantity") quantity: Int): Call<Product>
 
