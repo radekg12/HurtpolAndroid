@@ -42,4 +42,5 @@
     <string name="server_error">Błąd serwera, spróbuj ponownie.</string>
     <string name="product_detail">Nazwa produktu: %1$s\nOpis: %2$s\nCena: %3$d</string>
     <string name="product_image_desc">Zdjęcie produktu</string>
+    <string name="specification">Specyfikacja</string>
 </resources>

@@ -1,8 +1,9 @@
 package com.example.hurtpolandroid.ui.service
 
+import com.example.hurtpolandroid.ui.model.Account
+import com.example.hurtpolandroid.ui.model.CustomerDTO
 import com.example.hurtpolandroid.ui.model.SigninResponse
 import com.example.hurtpolandroid.ui.model.UserDTO
-import com.example.hurtpolandroid.ui.model.Account
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.Headers
@@ -14,6 +15,6 @@ interface AuthenticationService {
     fun signin(@Body userDTO: UserDTO): Call<SigninResponse>
 
     @POST("auth/signup")
-    fun signup(@Body account: Account): Call<Boolean>
+    fun signup(@Body account: Account): Call<CustomerDTO>
 
 }

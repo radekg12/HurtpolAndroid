@@ -6,13 +6,14 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.hurtpolandroid.R
+import com.example.hurtpolandroid.ui.model.CustomerDTO
 import com.example.hurtpolandroid.ui.signin.SigninActivity
 import kotlinx.android.synthetic.main.activity_signup.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class SignupActivity : AppCompatActivity(), Callback<Boolean> {
+class SignupActivity : AppCompatActivity(), Callback<CustomerDTO> {
 
     val signupViewModel = SignupViewModel()
 
@@ -48,11 +49,11 @@ class SignupActivity : AppCompatActivity(), Callback<Boolean> {
         signupViewModel.registration(firstname, lastname, email, password).enqueue(this)
     }
 
-    override fun onFailure(call: Call<Boolean>, t: Throwable) {
+    override fun onFailure(call: Call<CustomerDTO>, t: Throwable) {
         onSignupFailed()
     }
 
-    override fun onResponse(call: Call<Boolean>, response: Response<Boolean>) {
+    override fun onResponse(call: Call<CustomerDTO>, response: Response<CustomerDTO>) {
         if (response.isSuccessful) {
             onSignupSuccess()
         } else {
