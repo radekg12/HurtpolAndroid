@@ -3,38 +3,43 @@ package com.example.hurtpolandroid.ui.customer.home
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
+import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.hurtpolandroid.R
-import com.example.hurtpolandroid.ui.customer.productDetail.ProductDetailActivity
-import com.example.hurtpolandroid.ui.model.Content
+import com.example.hurtpolandroid.ui.model.CustomerDTO
 import com.example.hurtpolandroid.ui.model.Product
+import com.example.hurtpolandroid.ui.model.ProductPage
 import com.example.hurtpolandroid.ui.signin.SigninActivity
+import com.example.hurtpolandroid.ui.worker.cardmenu.CardMenuViewModel
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.app_bar_home.*
+import kotlinx.android.synthetic.main.content_home.*
+import kotlinx.android.synthetic.main.nav_header_home.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.util.logging.Logger
 
-class HomeActivity : AppCompatActivity(), Callback<Content<Product>>, NavigationView.OnNavigationItemSelectedListener {
+class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+
     companion object {
         const val PROUCT_ID_MESSAGE = "PRODUCT_ID"
     }
 
     val logger = Logger.getLogger(HomeActivity::class.java.name)
-    val productViews = ArrayList<TextView>()
-    var currentPageNumber = 0
-    var pageNumberMax = 100
+    lateinit var currentPage: ProductPage
+    var loading = false
+    var productList = ArrayList<Product>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,21 +54,33 @@ class HomeActivity : AppCompatActivity(), Callback<Content<Product>>, Navigation
 
         nav_view.setNavigationItemSelectedListener(this)
 
-        val pageNumberText = findViewById<TextView>(R.id.page_number_text)
-        pageNumberText.text = currentPageNumber.toString()
-        val prevButton = findViewById<Button>(R.id.prev_page_button)
-        prevButton.setOnClickListener {
-            currentPageNumber = Math.max(currentPageNumber - 1, 0)
-            pageNumberText.text = currentPageNumber.toString()
-            getProducts()
-        }
-        val nextButton = findViewById<Button>(R.id.next_page_button)
-        nextButton.setOnClickListener {
-            currentPageNumber = Math.min(currentPageNumber + 1, pageNumberMax)
-            pageNumberText.text = currentPageNumber.toString()
-            getProducts()
-        }
+        val linearManager = LinearLayoutManager(this)
+        recyclerView.setHasFixedSize(true)
+        recyclerView.adapter = ProductAdapter(this, productList)
+        recyclerView.layoutManager = linearManager
+        recyclerView.itemAnimator = DefaultItemAnimator()
+        recyclerView.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
 
+        val recyclerViewOnScrollListener = object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val visibleItemCount = linearManager.childCount
+                val totalItemCount = linearManager.itemCount
+                val firstVisibleItemPosition = linearManager.findFirstVisibleItemPosition()
+
+                if (!currentPage.last && !loading) {
+                    if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
+                        && firstVisibleItemPosition >= 0
+                    ) {
+                        recyclerView.setPadding(0, 0, 0, 100)
+                        getProducts()
+                    }
+                }
+            }
+        }
+        recyclerView.addOnScrollListener(recyclerViewOnScrollListener)
+
+        getUserData()
         getProducts()
     }
 
@@ -85,7 +102,6 @@ class HomeActivity : AppCompatActivity(), Callback<Content<Product>>, Navigation
         // Handle navigation view item clicks here.
         when (item.itemId) {
             R.id.nav_products -> {
-                // Handle the camera action
             }
             R.id.nav_cart -> {
 
@@ -104,50 +120,48 @@ class HomeActivity : AppCompatActivity(), Callback<Content<Product>>, Navigation
     }
 
     private fun getProducts() {
-        logger.info("Getting products from API service with pageNumber=$currentPageNumber")
-        cleanProductList()
-        val homeViewModel = HomeViewModel()
-        homeViewModel.getProducts(currentPageNumber).enqueue(this)
-    }
+        loading = true
+        loadingProductsProgressBar.visibility = View.VISIBLE
+        var nextPage = 0
+        if (productList.isNotEmpty()) {
+            nextPage = currentPage.number + 1
+        }
+        logger.info("Getting products from API service with pageNumber=$nextPage")
 
-    override fun onFailure(call: Call<Content<Product>>, t: Throwable) {
-        Toast.makeText(this, getString(R.string.server_error), Toast.LENGTH_LONG).show()
-        logger.warning(t.printStackTrace().toString())
-    }
-
-    override fun onResponse(call: Call<Content<Product>>, response: Response<Content<Product>>) {
-        response.body()?.content?.forEach { product ->
-            logger.info("Processing product with id " + product.id)
-            val productTextView = TextView(this)
-            productTextView.text =
-                java.lang.String.format("Name: ${product.name} Price: ${product.unitPrice}")
-
-            productTextView.setOnClickListener {
-                logger.info(java.lang.String.format("Product with id: ${product.id} has been clicked"))
-                productOnClick(product.id)
+        val homeViewModel = HomeViewModel(this)
+        homeViewModel.getProducts(nextPage).enqueue(object : Callback<ProductPage> {
+            override fun onFailure(call: Call<ProductPage>, t: Throwable) {
+                Toast.makeText(this@HomeActivity, getString(R.string.server_error), Toast.LENGTH_LONG).show()
+                loading = false
+                loadingProductsProgressBar.visibility = View.INVISIBLE
+                logger.warning(t.printStackTrace().toString())
             }
-            productTextView.gravity = Gravity.CENTER
-            products_list.addView(productTextView)
-            productViews.add(productTextView)
-        }
-        if (productViews.size == 0) {
-            val nonProductText = TextView(this)
-            nonProductText.text = getString(R.string.empty_product_list)
-            pageNumberMax = currentPageNumber
-            products_list.addView(nonProductText)
-        }
+
+            override fun onResponse(call: Call<ProductPage>, response: Response<ProductPage>) {
+                currentPage = response.body()!!
+                currentPage.content.forEach { product -> productList.add(product) }
+                recyclerView.adapter?.notifyDataSetChanged()
+                loading = false
+                recyclerView.setPadding(0, 0, 0, 0)
+                loadingProductsProgressBar.visibility = View.INVISIBLE
+            }
+        })
     }
 
-    fun productOnClick(productID: Int) {
-        val intent = Intent(this, ProductDetailActivity::class.java).apply {
-            putExtra(PROUCT_ID_MESSAGE, productID)
-        }
-        startActivity(intent)
-    }
+    private fun getUserData() {
+        val cardMenuViewModel = CardMenuViewModel(this)
+        cardMenuViewModel.getUser().enqueue(object : Callback<CustomerDTO> {
+            override fun onResponse(call: Call<CustomerDTO>, response: Response<CustomerDTO>) {
+                if (response.isSuccessful) {
+                    val fullName = response.body()?.firstName + " " + response.body()?.lastName
+                    user_name.text = fullName
+                    user_email.text = response.body()?.email
+                }
+            }
 
-    private fun cleanProductList() {
-        val homeView = findViewById<LinearLayout>(R.id.products_list)
-        homeView.removeAllViewsInLayout()
-        productViews.clear()
+            override fun onFailure(call: Call<CustomerDTO>, t: Throwable) {
+                logger.warning(t.printStackTrace().toString())
+            }
+        })
     }
 }
