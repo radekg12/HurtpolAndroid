@@ -13,8 +13,12 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             android:usesCleartextTraffic="true">
+        <activity android:name=".ui.customer.shoppingCart.ShoppingCartActivity">
+        </activity>
+        <activity android:name=".ui.customer.payment.PaymentActivity">
+        </activity>
         <activity
-                android:name="com.example.hurtpolandroid.ui.customer.productDetail.ProductDetailActivity"
+                android:name=".ui.customer.productDetail.ProductDetailActivity"
                 android:label="@string/title_activity_product_detail"
                 android:parentActivityName=".ui.customer.home.HomeActivity"
                 android:theme="@style/AppTheme.NoActionBar">

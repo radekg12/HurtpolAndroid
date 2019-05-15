@@ -21,16 +21,16 @@ class SigninViewModel(var context: Context) : ViewModel() {
     }
 
     fun isLogged(token: String): Boolean {
-        if (token != "") {
+        return if (token != "") {
             val jwt = JWT(token)
             val isActive = jwt.expiresAt!!.after(Calendar.getInstance().getTime())
-            return token != "" && isActive
-        } else return false
+            token != "" && isActive
+        } else false
     }
 
     fun getToken(): String {
         val preferences = context.getSharedPreferences("myPrefs", Context.MODE_PRIVATE)
-        return preferences.getString("token", "")
+        return preferences.getString("token", "").orEmpty()
     }
 
     fun saveToken(accessToken: String?) {

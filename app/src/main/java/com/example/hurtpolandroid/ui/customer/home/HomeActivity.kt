@@ -35,11 +35,9 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     companion object {
         const val PROUCT_ID_MESSAGE = "PRODUCT_ID"
     }
-
     val logger = Logger.getLogger(HomeActivity::class.java.name)
-    lateinit var currentPage: ProductPage
+    lateinit var homeViewModel: HomeViewModel
     var loading = false
-    var productList = ArrayList<Product>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,12 +49,12 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         )
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
-
+        homeViewModel=  HomeViewModel(this)
         nav_view.setNavigationItemSelectedListener(this)
 
         val linearManager = LinearLayoutManager(this)
         recyclerView.setHasFixedSize(true)
-        recyclerView.adapter = ProductAdapter(this, productList)
+        recyclerView.adapter = ProductAdapter(this, homeViewModel.productList)
         recyclerView.layoutManager = linearManager
         recyclerView.itemAnimator = DefaultItemAnimator()
         recyclerView.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
@@ -68,7 +66,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 val totalItemCount = linearManager.itemCount
                 val firstVisibleItemPosition = linearManager.findFirstVisibleItemPosition()
 
-                if (!currentPage.last && !loading) {
+                if (!homeViewModel.currentPage.last && !loading) {
                     if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
                         && firstVisibleItemPosition >= 0
                     ) {
@@ -123,12 +121,11 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         loading = true
         loadingProductsProgressBar.visibility = View.VISIBLE
         var nextPage = 0
-        if (productList.isNotEmpty()) {
-            nextPage = currentPage.number + 1
+        if (homeViewModel.productList.isNotEmpty()) {
+            nextPage = homeViewModel.currentPage.number + 1
         }
         logger.info("Getting products from API service with pageNumber=$nextPage")
 
-        val homeViewModel = HomeViewModel(this)
         homeViewModel.getProducts(nextPage).enqueue(object : Callback<ProductPage> {
             override fun onFailure(call: Call<ProductPage>, t: Throwable) {
                 Toast.makeText(this@HomeActivity, getString(R.string.server_error), Toast.LENGTH_LONG).show()
@@ -138,8 +135,8 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
 
             override fun onResponse(call: Call<ProductPage>, response: Response<ProductPage>) {
-                currentPage = response.body()!!
-                currentPage.content.forEach { product -> productList.add(product) }
+                homeViewModel.currentPage = response.body()!!
+                homeViewModel.currentPage.content.forEach { product -> homeViewModel.productList.add(product) }
                 recyclerView.adapter?.notifyDataSetChanged()
                 loading = false
                 recyclerView.setPadding(0, 0, 0, 0)
