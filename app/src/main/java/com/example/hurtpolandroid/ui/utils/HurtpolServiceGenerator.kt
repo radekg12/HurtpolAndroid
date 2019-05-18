@@ -1,6 +1,8 @@
 package com.example.hurtpolandroid.ui.utils
 
 import android.content.Context
+import android.content.SharedPreferences
+import android.preference.PreferenceManager
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit

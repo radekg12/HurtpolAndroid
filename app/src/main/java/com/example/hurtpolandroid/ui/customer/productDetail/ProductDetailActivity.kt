@@ -2,9 +2,11 @@ package com.example.hurtpolandroid.ui.customer.productDetail
 
 import android.os.Bundle
 import android.view.View
+import android.widget.AdapterView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,11 +27,15 @@ class ProductDetailActivity : AppCompatActivity() {
 
     val logger = Logger.getLogger(ProductDetailActivity::class.java.name)
     var productDetail: Product? = null
+    lateinit var model: ProductDetailViewModel
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_product_detail)
         setSupportActionBar(toolbar)
+
+        model = ProductDetailViewModel(this)
         val linearManager = LinearLayoutManager(this)
         specification.setHasFixedSize(true)
         specification.layoutManager = linearManager
@@ -37,7 +43,7 @@ class ProductDetailActivity : AppCompatActivity() {
         specification.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
         ViewCompat.setNestedScrollingEnabled(specification, false)
 
-        val productID = intent?.extras?.getInt(HomeActivity.PROUCT_ID_MESSAGE)
+        val productID = intent?.extras!!.getInt(HomeActivity.PROUCT_ID_MESSAGE)
         if (productID == null) {
             Toast.makeText(this, getString(R.string.null_product_id), Toast.LENGTH_LONG).show()
             finish()
@@ -45,15 +51,21 @@ class ProductDetailActivity : AppCompatActivity() {
             getProductDetail(productID)
         }
         add_product_button.setOnClickListener {
-            //TODO add product to basket
+            model.addProductToShoppingCart(productID)
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        model.shoppingCartResponse.observe(this, object: Observer<Product>{
+            override fun onChanged(t: Product?) {
+                Toast.makeText(this@ProductDetailActivity, getString(R.string.addedToCart), Toast.LENGTH_LONG).show()
+            }
+
+        })
 
     }
 
     private fun getProductDetail(productID: Int) {
-        val productDetailViewModel = ProductDetailViewModel()
-        productDetailViewModel.getProductDetail(productID).enqueue(object : Callback<Product> {
+        model.getProductDetail(productID).enqueue(object : Callback<Product> {
             override fun onFailure(call: Call<Product>, t: Throwable) {
                 Toast.makeText(this@ProductDetailActivity, getString(R.string.server_error), Toast.LENGTH_LONG).show()
                 loadingProduct.visibility = View.GONE

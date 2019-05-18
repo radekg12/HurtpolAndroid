@@ -8,6 +8,6 @@
     <color name="secondaryDarkColor">#000051</color>
     <color name="primaryTextColor">#ffffff</color>
     <color name="secondaryTextColor">#ffffff</color>
-
+    <color name="alertColor">#E74C3C</color>
     <color name="grayLight">#e0e0e0</color>
 </resources>

@@ -21,7 +21,7 @@ class ProductAdapter(val context: Context, val productList: List<Product>) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
         //inflating and returning our view holder
         val inflater = LayoutInflater.from(context)
-        val view = inflater.inflate(R.layout.layout_products, null)
+        val view = inflater.inflate(R.layout.layout_product, null)
         return ProductViewHolder(view)
     }
 

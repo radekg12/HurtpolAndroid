@@ -26,8 +26,23 @@
         <item name="android:textColor">@color/primaryDarkColor</item>
     </style>
 
+    <style name="AppTheme.ShoppingCartToolbar" parent="ThemeOverlay.MaterialComponents.Toolbar.Primary">
+        <item name="android:background">@color/primaryDarkColor</item>
+        <item name="android:textColor">@color/grayLight</item>
+    </style>
+    
+    <style name="AppTheme.BoldText" parent="TextAppearance.AppCompat.Large">
+        <item name="android:textStyle">bold</item>
+    </style>
+
     <style name="ProgressBarStyle">
         <item name="colorAccent">@color/secondaryColor</item>
+    </style>
+
+    <style name="AppTheme.IconOnlyButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="iconPadding">0dp</item>
+        <item name="iconGravity">textStart</item>
+        <item name="cornerRadius">180dp</item>
     </style>
 
     <style name="PrimaryActionButton" parent="Widget.MaterialComponents.FloatingActionButton">
