@@ -80,7 +80,7 @@ class SigninActivity : AppCompatActivity(), Callback<SigninResponse> {
     fun login() {
 
         if (!validate())
-            onLoginFailed();
+            onLoginFailed()
 
         btn_login.isEnabled = false
         loadingProgressBar.visibility = View.VISIBLE

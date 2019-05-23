@@ -1,7 +1,6 @@
 package com.example.hurtpolandroid.ui.service
 
 import com.example.hurtpolandroid.ui.model.Product
-import com.example.hurtpolandroid.ui.model.ShoppingCart
 import com.example.hurtpolandroid.ui.model.ShoppingCartItem
 import com.example.hurtpolandroid.ui.model.ShoppingCartItemToUpdate
 import retrofit2.Call

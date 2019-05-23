@@ -57,12 +57,14 @@ class ShoppingCartActivity : AppCompatActivity() {
                 val display = windowManager.defaultDisplay
                 var background: ColorDrawable
                 background= ColorDrawable(ContextCompat.getColor(this@ShoppingCartActivity,R.color.alertColor))
-                background.setBounds(0, viewHolder.itemView.getTop(),
-                    (viewHolder.itemView.getLeft() + dX).toInt(),  viewHolder.itemView.getBottom());
-                background.draw(c);
-                val icon = ContextCompat.getDrawable(this@ShoppingCartActivity, R.drawable.ic_delete_black_24dp);
-                icon?.setBounds(30, viewHolder.itemView.getTop()+60, 110, viewHolder.itemView.getTop()+140);
-                icon?.draw(c);
+                background.setBounds(
+                    0, viewHolder.itemView.top,
+                    (viewHolder.itemView.left + dX).toInt(), viewHolder.itemView.bottom
+                )
+                background.draw(c)
+                val icon = ContextCompat.getDrawable(this@ShoppingCartActivity, R.drawable.ic_delete_black_24dp)
+                icon?.setBounds(30, viewHolder.itemView.top + 60, 110, viewHolder.itemView.top + 140)
+                icon?.draw(c)
                 super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
 
             }

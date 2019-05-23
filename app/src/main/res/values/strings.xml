@@ -48,4 +48,8 @@
     <string name="inShoppingCart">W koszyku:</string>
     <string name="items">szt.</string>
     <string name="addedToCart">Dodano produkt do koszyka</string>
+    <string name="description">Opis</string>
+    <string name="value">Wartość</string>
+    <string name="full_name">Imie Nazwisko</string>
+    <string name="price">Cena</string>
 </resources>

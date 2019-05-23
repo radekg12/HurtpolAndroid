@@ -1,8 +1,6 @@
 package com.example.hurtpolandroid.ui.utils
 
 import android.content.Context
-import android.content.SharedPreferences
-import android.preference.PreferenceManager
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -13,7 +11,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 class HurtpolServiceGenerator {
     private val BASE_URL = "https://userportal.radekg96.com/"
 //    private val BASE_URL = "http://192.168.0.51:8080/user-portal/"
-    var logging = HttpLoggingInterceptor();
+var logging = HttpLoggingInterceptor()
 
     private val builder = Retrofit.Builder()
         .baseUrl(BASE_URL)
@@ -33,7 +31,7 @@ class HurtpolServiceGenerator {
 
     fun <S> createServiceWithToken(serviceClass: Class<S>, context: Context): S {
         val token = getToken(context)
-        logging.setLevel(HttpLoggingInterceptor.Level.HEADERS);
+        logging.level = HttpLoggingInterceptor.Level.HEADERS
         httpClient.addInterceptor(logging)
         if (token != "") {
             httpClient.interceptors().clear()
