@@ -15,8 +15,6 @@
             android:usesCleartextTraffic="true">
         <activity android:name=".ui.customer.shoppingCart.ShoppingCartActivity">
         </activity>
-        <activity android:name=".ui.customer.payment.PaymentActivity">
-        </activity>
         <activity
                 android:name=".ui.customer.productDetail.ProductDetailActivity"
                 android:label="@string/title_activity_product_detail"

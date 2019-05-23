@@ -15,8 +15,8 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.hurtpolandroid.R
+import com.example.hurtpolandroid.ui.customer.shoppingCart.ShoppingCartActivity
 import com.example.hurtpolandroid.ui.model.CustomerDTO
-import com.example.hurtpolandroid.ui.model.Product
 import com.example.hurtpolandroid.ui.model.ProductPage
 import com.example.hurtpolandroid.ui.signin.SigninActivity
 import com.example.hurtpolandroid.ui.worker.cardmenu.CardMenuViewModel
@@ -102,7 +102,8 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_products -> {
             }
             R.id.nav_cart -> {
-
+                val intent = Intent(this, ShoppingCartActivity::class.java)
+                startActivity(intent)
             }
             R.id.nav_logout -> {
                 val intent = Intent(this, SigninActivity::class.java).apply {

@@ -43,4 +43,13 @@
     <string name="product_detail">Nazwa produktu: %1$s\nOpis: %2$s\nCena: %3$d</string>
     <string name="product_image_desc">Zdjęcie produktu</string>
     <string name="specification">Specyfikacja</string>
+    <string name="pay">Zapać</string>
+    <string name="products_upper_case">PRODUKTÓW</string>
+    <string name="inShoppingCart">W koszyku:</string>
+    <string name="items">szt.</string>
+    <string name="addedToCart">Dodano produkt do koszyka</string>
+    <string name="description">Opis</string>
+    <string name="value">Wartość</string>
+    <string name="full_name">Imie Nazwisko</string>
+    <string name="price">Cena</string>
 </resources>

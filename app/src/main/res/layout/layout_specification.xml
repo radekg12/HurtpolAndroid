@@ -8,7 +8,7 @@
             android:layout_width="90dp"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
-            android:text="Nazwa"
+            android:text="@string/name"
             android:layout_gravity="center_vertical"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
             android:textColor="@color/primaryDarkColor" />
@@ -20,7 +20,7 @@
             android:layout_margin="5dp"
             android:layout_marginTop="5dp"
             android:layout_gravity="center_vertical"
-            android:text="Wartość"
+            android:text="@string/value"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Small" />
 
 </LinearLayout>

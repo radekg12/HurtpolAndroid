@@ -29,8 +29,8 @@
                         android:id="@+id/textViewTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp"
-                        android:text="Nazwa"
+                        android:layout_marginStart="5dp"
+                        android:text="@string/name"
                         android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
                         android:textColor="@color/primaryDarkColor" />
 
@@ -41,9 +41,9 @@
                         android:layout_below="@id/textViewTitle"
                         android:ellipsize="end"
                         android:maxLines="4"
-                        android:layout_marginLeft="5dp"
+                        android:layout_marginStart="5dp"
                         android:layout_marginTop="5dp"
-                        android:text="Opis"
+                        android:text="@string/description"
                         android:textAppearance="@style/Base.TextAppearance.AppCompat.Small" />
 
                 <TextView
@@ -53,7 +53,7 @@
                         android:layout_below="@id/textViewShortDesc"
                         android:layout_marginTop="5dp"
                         android:gravity="center_horizontal"
-                        android:text="Cena"
+                        android:text="@string/price"
                         android:textColor="@color/secondaryDarkColor"
                         android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
                         android:textStyle="bold"

@@ -12,8 +12,6 @@ data class ProductPage(
     val totalPages: Int
 )
 
-data class Content<T>(val content: List<T>)
-
 data class Product(
     val id: Int,
     val name: String,

@@ -29,7 +29,7 @@ class ScannerActivity : AppCompatActivity(), Callback<Product> {
 
         val operationType = intent.extras.getSerializable("Operation")
         if (operationType == OperationType.TAKE) {
-            imageView.setImageDrawable(resources.getDrawable(com.example.hurtpolandroid.R.drawable.take))
+            imageView.setImageDrawable(resources.getDrawable(R.drawable.take))
             operation_name.text = getString(R.string.take_title)
         } else {
             imageView.setImageDrawable(resources.getDrawable(com.example.hurtpolandroid.R.drawable.put))

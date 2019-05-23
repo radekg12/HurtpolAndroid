@@ -36,7 +36,7 @@ class SignupActivity : AppCompatActivity(), Callback<CustomerDTO> {
     fun signup() {
 
         if (!validate())
-            onSignupFailed();
+            onSignupFailed()
 
         btn_signup.isEnabled = false
         loadingProgressBar.visibility = View.VISIBLE
