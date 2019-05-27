@@ -33,9 +33,10 @@ import java.util.logging.Logger
 class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     companion object {
-        const val PROUCT_ID_MESSAGE = "PRODUCT_ID"
+        const val PRODUCT_ID_MESSAGE = "PRODUCT_ID"
     }
-    val logger = Logger.getLogger(HomeActivity::class.java.name)
+
+    val logger: Logger = Logger.getLogger(HomeActivity::class.java.name)
     lateinit var homeViewModel: HomeViewModel
     var loading = false
 
@@ -49,7 +50,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         )
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
-        homeViewModel=  HomeViewModel(this)
+        homeViewModel = HomeViewModel(this)
         nav_view.setNavigationItemSelectedListener(this)
 
         val linearManager = LinearLayoutManager(this)

@@ -1,13 +1,15 @@
 package com.example.hurtpolandroid.ui.customer.shoppingCart
 
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.hurtpolandroid.ui.model.ShoppingCartItem
-import com.example.hurtpolandroid.ui.model.ShoppingCartItemToUpdate
+import com.example.hurtpolandroid.ui.model.*
+import com.example.hurtpolandroid.ui.service.PaymentService
 import com.example.hurtpolandroid.ui.service.ShoppingCartService
 import com.example.hurtpolandroid.ui.utils.HurtpolServiceGenerator
+import com.github.kittinunf.fuel.util.encodeBase64ToString
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -17,12 +19,16 @@ class ShoppingCartViewModel(val context: Context) : ViewModel(), ShoppingCartAda
 
     private var shoppingCartService =
         HurtpolServiceGenerator().createServiceWithToken(ShoppingCartService::class.java, context)
+
+    private var paymentService =
+        HurtpolServiceGenerator().createServiceWithToken(PaymentService::class.java, context)
+
     var shoppingCart = MutableLiveData<ArrayList<ShoppingCartItem>>()
 
     fun getShoppingCart() {
         shoppingCartService.getShoppingCart().enqueue(object : Callback<ArrayList<ShoppingCartItem>> {
             override fun onFailure(call: Call<ArrayList<ShoppingCartItem>>, t: Throwable) {
-                println("Blad" + t)
+                println("Blad$t")
             }
 
             override fun onResponse(
@@ -44,19 +50,19 @@ class ShoppingCartViewModel(val context: Context) : ViewModel(), ShoppingCartAda
         return format.format(getTotalPrice())
     }
 
-    private fun getTotalPrice(): Double {
+    fun getTotalPrice(): Double {
         return shoppingCart.value!!.sumByDouble { it.quantity * (it.product.unitPrice.div(100)).toDouble() }
     }
 
     fun removeProduct(position: Int) {
-        shoppingCartService.removeProduct(shoppingCart.value!!.get(position).product.id)
+        shoppingCartService.removeProduct(shoppingCart.value!![position].product.id)
             .enqueue(object : Callback<ShoppingCartItem> {
                 override fun onFailure(call: Call<ShoppingCartItem>, t: Throwable) {
                     println("1")
                 }
 
                 override fun onResponse(call: Call<ShoppingCartItem>, response: Response<ShoppingCartItem>) {
-                    var list: ArrayList<ShoppingCartItem> = shoppingCart.value!!
+                    val list: ArrayList<ShoppingCartItem> = shoppingCart.value!!
                     list.removeAt(position)
                     shoppingCart.value = list
                     toastOnDelete()
@@ -65,23 +71,23 @@ class ShoppingCartViewModel(val context: Context) : ViewModel(), ShoppingCartAda
             })
     }
 
-    private fun updateProductCount(cart: ShoppingCartItem, number: Int){
+    private fun updateProductCount(cart: ShoppingCartItem, number: Int) {
         shoppingCartService.updateProduct(ShoppingCartItemToUpdate(cart.product.id, cart.quantity + number))
             .enqueue(object : Callback<ShoppingCartItem> {
                 override fun onFailure(call: Call<ShoppingCartItem>, t: Throwable) {
-                    Toast.makeText(context, "Blad", Toast.LENGTH_LONG)
+                    Toast.makeText(context, "Blad", Toast.LENGTH_LONG).show()
                 }
 
                 override fun onResponse(call: Call<ShoppingCartItem>, response: Response<ShoppingCartItem>) {
-                    var list: ArrayList<ShoppingCartItem> = shoppingCart.value!!
-                    list.get(list.indexOf(cart)) .quantity = response.body()!!.quantity
-                    shoppingCart.value=list
+                    val list: ArrayList<ShoppingCartItem> = shoppingCart.value!!
+                    list[list.indexOf(cart)].quantity = response.body()!!.quantity
+                    shoppingCart.value = list
                 }
 
             })
     }
 
-    fun plusProduct(item: ShoppingCartItem){
+    private fun plusProduct(item: ShoppingCartItem) {
         updateProductCount(item, 1)
     }
 
@@ -93,8 +99,26 @@ class ShoppingCartViewModel(val context: Context) : ViewModel(), ShoppingCartAda
         plusProduct(item)
     }
 
-    fun toastOnDelete(){
+    fun toastOnDelete() {
         Toast.makeText(context, "Usunięto produkt z koszyka", Toast.LENGTH_LONG).show()
+    }
+
+    fun payForOrder(deliveryAddress: Address, googlePaymentToken: String) {
+        paymentService.payForOrder(PaymentRequest(deliveryAddress, googlePaymentToken.encodeBase64ToString()))
+            .enqueue(object : Callback<PaymentResponse> {
+                override fun onFailure(call: Call<PaymentResponse>, t: Throwable) {
+                    Toast.makeText(context, "Blad", Toast.LENGTH_LONG).show()
+                    Log.d("błąd", t.message)
+                }
+
+                override fun onResponse(call: Call<PaymentResponse>, response: Response<PaymentResponse>) {
+                    getShoppingCart()
+                    Toast.makeText(context, "Udana transakcja", Toast.LENGTH_LONG).show()
+                    if (response.body()?.status?.statusCode == "SUCCESS") {
+                        Log.d("success", response.message())
+                    }
+                }
+            })
     }
 
 }

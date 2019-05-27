@@ -27,12 +27,12 @@ class ScannerActivity : AppCompatActivity(), Callback<Product> {
         setContentView(R.layout.activity_scanner)
         scannerViewModel = ScannerViewModel(this)
 
-        val operationType = intent.extras.getSerializable("Operation")
+        val operationType = intent?.extras?.getSerializable("Operation")
         if (operationType == OperationType.TAKE) {
             imageView.setImageDrawable(resources.getDrawable(R.drawable.take))
             operation_name.text = getString(R.string.take_title)
         } else {
-            imageView.setImageDrawable(resources.getDrawable(com.example.hurtpolandroid.R.drawable.put))
+            imageView.setImageDrawable(resources.getDrawable(R.drawable.put))
             operation_name.text = getString(R.string.put_title)
         }
 
@@ -98,7 +98,7 @@ class ScannerActivity : AppCompatActivity(), Callback<Product> {
         }
     }
 
-    fun validate(): Boolean {
+    private fun validate(): Boolean {
         var valid = true
 
         val id = product_code.text.toString()

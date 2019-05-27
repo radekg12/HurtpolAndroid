@@ -15,7 +15,7 @@ import retrofit2.Response
 
 class SignupActivity : AppCompatActivity(), Callback<CustomerDTO> {
 
-    val signupViewModel = SignupViewModel()
+    private val signupViewModel = SignupViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,7 +33,7 @@ class SignupActivity : AppCompatActivity(), Callback<CustomerDTO> {
 
     }
 
-    fun signup() {
+    private fun signup() {
 
         if (!validate())
             onSignupFailed()
@@ -62,7 +62,7 @@ class SignupActivity : AppCompatActivity(), Callback<CustomerDTO> {
     }
 
 
-    fun onSignupSuccess() {
+    private fun onSignupSuccess() {
         btn_signup.isEnabled = true
         setResult(RESULT_OK, null)
         btn_signup.isEnabled = true
@@ -72,13 +72,13 @@ class SignupActivity : AppCompatActivity(), Callback<CustomerDTO> {
         startActivityForResult(intent, 0)
     }
 
-    fun onSignupFailed() {
+    private fun onSignupFailed() {
         Toast.makeText(baseContext, "Rejestracja nieudana", Toast.LENGTH_LONG).show()
         btn_signup.isEnabled = true
         loadingProgressBar.visibility = View.GONE
     }
 
-    fun validate(): Boolean {
+    private fun validate(): Boolean {
         var valid = true
 
         val firstname = input_firstname.text.toString()

@@ -7,15 +7,15 @@ import retrofit2.Call
 import retrofit2.http.*
 
 interface ShoppingCartService {
-    @GET("/shoppingCart")
+    @GET("shoppingCart")
     fun getShoppingCart(): Call<ArrayList<ShoppingCartItem>>
 
-    @PUT("/shoppingCart")
+    @PUT("shoppingCart")
     fun updateProduct(@Body shoppingCartItemToUpdate: ShoppingCartItemToUpdate): Call<ShoppingCartItem>
 
-    @DELETE("/shoppingCart/{id}")
+    @DELETE("shoppingCart/{id}")
     fun removeProduct(@Path("id") productId: Int): Call<ShoppingCartItem>
 
-    @POST("/shoppingCart")
+    @POST("shoppingCart")
     fun addProduct(@Body productId: Int): Call<Product>
 }

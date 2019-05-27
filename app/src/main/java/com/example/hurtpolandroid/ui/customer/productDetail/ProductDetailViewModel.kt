@@ -13,14 +13,15 @@ import retrofit2.Response
 
 class ProductDetailViewModel(context: Context) : ViewModel() {
     var shoppingCartResponse: MediatorLiveData<Product> = MediatorLiveData()
-    private var shoppingCartService = HurtpolServiceGenerator().createServiceWithToken(ShoppingCartService::class.java, context)
+    private var shoppingCartService =
+        HurtpolServiceGenerator().createServiceWithToken(ShoppingCartService::class.java, context)
     private var productService = HurtpolServiceGenerator().createService(ProductService::class.java)
 
     fun getProductDetail(productID: Int): Call<Product> {
         return productService.getProductByID(productID)
     }
 
-    fun addProductToShoppingCart(productId: Int){
+    fun addProductToShoppingCart(productId: Int) {
         shoppingCartService.addProduct(productId).enqueue(object : Callback<Product> {
             override fun onFailure(call: Call<Product>, t: Throwable) {
 

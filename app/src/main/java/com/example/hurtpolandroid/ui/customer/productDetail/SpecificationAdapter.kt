@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.hurtpolandroid.R
 import com.example.hurtpolandroid.ui.model.Specification
 
-class SpecificationAdapter(val context: Context, val productList: List<Specification>) :
+class SpecificationAdapter(val context: Context, private val productList: List<Specification>) :
     RecyclerView.Adapter<SpecificationAdapter.SpecificationViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SpecificationViewHolder {
@@ -25,7 +25,7 @@ class SpecificationAdapter(val context: Context, val productList: List<Specifica
 
     override fun onBindViewHolder(holder: SpecificationViewHolder, position: Int) {
         //getting the product of the specified position
-        val product = productList.get(position)
+        val product = productList[position]
 
         //binding the data with the viewholder views
         holder.name.text = product.name
@@ -34,7 +34,7 @@ class SpecificationAdapter(val context: Context, val productList: List<Specifica
     }
 
     class SpecificationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var name = itemView.findViewById<TextView>(R.id.spec_name)
-        var value = itemView.findViewById<TextView>(R.id.spec_value)
+        var name: TextView = itemView.findViewById(R.id.spec_name)
+        var value: TextView = itemView.findViewById(R.id.spec_value)
     }
 }

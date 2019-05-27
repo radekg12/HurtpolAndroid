@@ -15,7 +15,7 @@ import com.example.hurtpolandroid.ui.model.Product
 import java.text.NumberFormat
 
 
-class ProductAdapter(val context: Context, val productList: List<Product>) :
+class ProductAdapter(val context: Context, private val productList: List<Product>) :
     RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
@@ -31,7 +31,7 @@ class ProductAdapter(val context: Context, val productList: List<Product>) :
 
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
         //getting the product of the specified position
-        val product = productList.get(position)
+        val product = productList[position]
 
         //binding the data with the viewholder views
         holder.textViewTitle.text = product.name
@@ -52,15 +52,15 @@ class ProductAdapter(val context: Context, val productList: List<Product>) :
 
     private fun productOnClick(productID: Int) {
         val intent = Intent(context, ProductDetailActivity::class.java).apply {
-            putExtra(HomeActivity.PROUCT_ID_MESSAGE, productID)
+            putExtra(HomeActivity.PRODUCT_ID_MESSAGE, productID)
         }
         context.startActivity(intent)
     }
 
     class ProductViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var textViewTitle = itemView.findViewById<TextView>(R.id.textViewTitle)
-        var textViewShortDesc = itemView.findViewById<TextView>(R.id.textViewShortDesc)
-        var textViewPrice = itemView.findViewById<TextView>(R.id.textViewPrice)
-        var imageView = itemView.findViewById<ImageView>(R.id.imageView)
+        var textViewTitle: TextView = itemView.findViewById(R.id.textViewTitle)
+        var textViewShortDesc: TextView = itemView.findViewById(R.id.textViewShortDesc)
+        var textViewPrice: TextView = itemView.findViewById(R.id.textViewPrice)
+        var imageView: ImageView = itemView.findViewById(R.id.imageView)
     }
 }

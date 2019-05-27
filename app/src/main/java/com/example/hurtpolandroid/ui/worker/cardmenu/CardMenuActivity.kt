@@ -9,9 +9,9 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import com.example.hurtpolandroid.R
+import com.example.hurtpolandroid.ui.model.CustomerDTO
 import com.example.hurtpolandroid.ui.signin.SigninActivity
 import com.example.hurtpolandroid.ui.worker.OperationType
-import com.example.hurtpolandroid.ui.model.CustomerDTO
 import com.example.hurtpolandroid.ui.worker.scanner.ScannerActivity
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_card_menu.*
@@ -21,8 +21,6 @@ import kotlinx.android.synthetic.main.nav_header_card_menu.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-
-
 
 
 class CardMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, Callback<CustomerDTO> {
@@ -50,15 +48,15 @@ class CardMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         getUserData()
     }
 
-    fun changeActivity(operation: OperationType) {
+    private fun changeActivity(operation: OperationType) {
         val intent = Intent(this, ScannerActivity::class.java).apply {
             putExtra("Operation", operation)
         }
         startActivity(intent)
     }
 
-    fun getUserData() {
-        var cardMenuViewModel = CardMenuViewModel(this)
+    private fun getUserData() {
+        val cardMenuViewModel = CardMenuViewModel(this)
         cardMenuViewModel.getUser().enqueue(this)
     }
 

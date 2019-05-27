@@ -48,9 +48,9 @@ class SigninActivity : AppCompatActivity(), Callback<SigninResponse> {
                     slideUp(bookIconImageView)
                 else {
                     //TODO autologowanie, poprawic jak nowe logowanie bedzie na prod
-                    var jwt = JWT(token)
+                    val jwt = JWT(token)
                     val list = mutableListOf<Authority>()
-                    list.add(Authority(jwt.claims.get("auth")?.asString().toString()))
+                    list.add(Authority(jwt.claims["auth"]?.asString().toString()))
 //                    list.add(Authority("ROLE_USER"))
                     val data = SigninResponse(jwt.signature, "Bearer", true, list)
                     onLoginSuccess(data)
@@ -77,7 +77,7 @@ class SigninActivity : AppCompatActivity(), Callback<SigninResponse> {
         view.startAnimation(animate)
     }
 
-    fun login() {
+    private fun login() {
 
         if (!validate())
             onLoginFailed()
@@ -96,7 +96,7 @@ class SigninActivity : AppCompatActivity(), Callback<SigninResponse> {
     override fun onResponse(call: Call<SigninResponse>, response: Response<SigninResponse>) {
         if (response.isSuccessful) {
             val data = response.body() as SigninResponse
-            signinViewModel.saveToken( response.body()?.accessToken)
+            signinViewModel.saveToken(response.body()?.accessToken)
             onLoginSuccess(data)
         } else {
             onLoginFailed()
@@ -118,7 +118,7 @@ class SigninActivity : AppCompatActivity(), Callback<SigninResponse> {
         }
     }
 
-    fun onLoginFailed() {
+    private fun onLoginFailed() {
         Toast.makeText(baseContext, "Logowanie nieudane", Toast.LENGTH_LONG).show()
         loadingProgressBar.visibility = View.GONE
         btn_login.isEnabled = true
@@ -130,7 +130,7 @@ class SigninActivity : AppCompatActivity(), Callback<SigninResponse> {
         btn_login.isEnabled = true
     }
 
-    fun validate(): Boolean {
+    private fun validate(): Boolean {
         var valid = true
 
         val email = input_email.text.toString()
