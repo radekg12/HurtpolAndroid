@@ -24,7 +24,7 @@ import java.util.logging.Logger
 
 class ProductDetailActivity : AppCompatActivity() {
 
-    val logger = Logger.getLogger(ProductDetailActivity::class.java.name)
+    val logger: Logger = Logger.getLogger(ProductDetailActivity::class.java.name)
     var productDetail: Product? = null
     lateinit var model: ProductDetailViewModel
 
@@ -42,7 +42,7 @@ class ProductDetailActivity : AppCompatActivity() {
         specification.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
         ViewCompat.setNestedScrollingEnabled(specification, false)
 
-        val productID = intent?.extras!!.getInt(HomeActivity.PROUCT_ID_MESSAGE)
+        val productID = intent?.extras!!.getInt(HomeActivity.PRODUCT_ID_MESSAGE)
         if (productID == null) {
             Toast.makeText(this, getString(R.string.null_product_id), Toast.LENGTH_LONG).show()
             finish()
@@ -54,12 +54,14 @@ class ProductDetailActivity : AppCompatActivity() {
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        model.shoppingCartResponse.observe(this, object: Observer<Product>{
-            override fun onChanged(t: Product?) {
-                Toast.makeText(this@ProductDetailActivity, getString(R.string.addedToCart), Toast.LENGTH_LONG).show()
-            }
-
-        })
+        model.shoppingCartResponse.observe(this,
+            Observer<Product> {
+                Toast.makeText(
+                    this@ProductDetailActivity,
+                    getString(R.string.addedToCart),
+                    Toast.LENGTH_LONG
+                ).show()
+            })
 
     }
 

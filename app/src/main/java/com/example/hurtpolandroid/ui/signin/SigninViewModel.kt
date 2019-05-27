@@ -23,7 +23,7 @@ class SigninViewModel(var context: Context) : ViewModel() {
     fun isLogged(token: String): Boolean {
         return if (token != "") {
             val jwt = JWT(token)
-            val isActive = jwt.expiresAt!!.after(Calendar.getInstance().getTime())
+            val isActive = jwt.expiresAt!!.after(Calendar.getInstance().time)
             token != "" && isActive
         } else false
     }

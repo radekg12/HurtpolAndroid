@@ -45,7 +45,7 @@ class ShoppingCartAdapter(
 
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
         //getting the product of the specified position
-        val cart = shoppingCart.get(position)
+        val cart = shoppingCart[position]
 
         //binding the data with the viewholder views
         holder.textViewTitle.text = cart.product.name
@@ -78,7 +78,7 @@ class ShoppingCartAdapter(
 
     private fun productOnClick(productID: Int) {
         val intent = Intent(context, ProductDetailActivity::class.java).apply {
-            putExtra(HomeActivity.PROUCT_ID_MESSAGE, productID)
+            putExtra(HomeActivity.PRODUCT_ID_MESSAGE, productID)
         }
         context.startActivity(intent)
     }

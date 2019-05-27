@@ -3,8 +3,8 @@ package com.example.hurtpolandroid.ui.worker.scanner
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import com.example.hurtpolandroid.ui.model.Product
-import com.example.hurtpolandroid.ui.utils.HurtpolServiceGenerator
 import com.example.hurtpolandroid.ui.service.WarehouseService
+import com.example.hurtpolandroid.ui.utils.HurtpolServiceGenerator
 import retrofit2.Call
 
 class ScannerViewModel(var context: Context) : ViewModel() {

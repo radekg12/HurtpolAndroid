@@ -51,6 +51,10 @@
                 android:screenOrientation="fullSensor"
                 tools:replace="screenOrientation"/>
         <activity android:name=".ui.customer.home.HomeActivity"/>
+        <!-- This element is required in order to use the PaymentsClient -->
+        <meta-data
+                android:name="com.google.android.gms.wallet.api.enabled"
+                android:value="true"/>
     </application>
 
 </manifest>

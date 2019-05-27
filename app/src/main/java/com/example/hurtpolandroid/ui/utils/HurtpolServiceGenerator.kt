@@ -9,9 +9,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 
 class HurtpolServiceGenerator {
-    private val BASE_URL = "https://userportal.radekg96.com/"
-//    private val BASE_URL = "http://192.168.0.51:8080/user-portal/"
-var logging = HttpLoggingInterceptor()
+    //    private val BASE_URL = "https://userportal.radekg96.com/"
+    private val BASE_URL = "http://192.168.0.102:8080/user-portal/"
+    private var logging = HttpLoggingInterceptor()
 
     private val builder = Retrofit.Builder()
         .baseUrl(BASE_URL)
@@ -38,7 +38,7 @@ var logging = HttpLoggingInterceptor()
             httpClient.addInterceptor { chain ->
                 val original = chain.request()
                 val builder1 = original.newBuilder()
-                    .header("Authorization", "Bearer " + token)
+                    .header("Authorization", "Bearer $token")
                 val request = builder1.build()
                 chain.proceed(request)
             }

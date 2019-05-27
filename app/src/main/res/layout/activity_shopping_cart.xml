@@ -58,12 +58,12 @@
             android:layout_marginBottom="8dp" app:layout_constraintBottom_toTopOf="@+id/btn_pay">
     </androidx.recyclerview.widget.RecyclerView>
 
-    <androidx.appcompat.widget.AppCompatButton
+    <include
             android:id="@+id/btn_pay"
+            layout="@layout/buy_with_googlepay_button"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/pay"
-            android:layout_marginBottom="10dp"
+            android:layout_height="@dimen/buy_button_height"
+            android:layout_marginBottom="20dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>

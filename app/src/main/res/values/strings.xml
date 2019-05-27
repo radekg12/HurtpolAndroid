@@ -52,4 +52,7 @@
     <string name="value">Wartość</string>
     <string name="full_name">Imie Nazwisko</string>
     <string name="price">Cena</string>
+    <string name="googlepay_button_content_description">Google Pay</string>
+    <string name="buy_with_googlepay_button_content_description">Kup z Google Pay</string>
+    <string name="payments_show_name" translatable="false">Successfully received payment data for %s!</string>
 </resources>
