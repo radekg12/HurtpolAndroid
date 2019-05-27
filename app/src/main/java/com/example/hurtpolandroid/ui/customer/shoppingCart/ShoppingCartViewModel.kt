@@ -9,6 +9,7 @@ import com.example.hurtpolandroid.ui.model.*
 import com.example.hurtpolandroid.ui.service.PaymentService
 import com.example.hurtpolandroid.ui.service.ShoppingCartService
 import com.example.hurtpolandroid.ui.utils.HurtpolServiceGenerator
+import com.github.kittinunf.fuel.util.encodeBase64ToString
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -103,7 +104,7 @@ class ShoppingCartViewModel(val context: Context) : ViewModel(), ShoppingCartAda
     }
 
     fun payForOrder(deliveryAddress: Address, googlePaymentToken: String) {
-        paymentService.payForOrder(PaymentRequest(deliveryAddress, googlePaymentToken))
+        paymentService.payForOrder(PaymentRequest(deliveryAddress, googlePaymentToken.encodeBase64ToString()))
             .enqueue(object : Callback<PaymentResponse> {
                 override fun onFailure(call: Call<PaymentResponse>, t: Throwable) {
                     Toast.makeText(context, "Blad", Toast.LENGTH_LONG).show()
@@ -111,8 +112,11 @@ class ShoppingCartViewModel(val context: Context) : ViewModel(), ShoppingCartAda
                 }
 
                 override fun onResponse(call: Call<PaymentResponse>, response: Response<PaymentResponse>) {
+                    getShoppingCart()
                     Toast.makeText(context, "Udana transakcja", Toast.LENGTH_LONG).show()
-                    Log.d("success", response.message())
+                    if (response.body()?.status?.statusCode == "SUCCESS") {
+                        Log.d("success", response.message())
+                    }
                 }
             })
     }

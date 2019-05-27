@@ -93,8 +93,6 @@ class ShoppingCartActivity : AppCompatActivity() {
 
             }
 
-            // More code here
-
         }
 
         val myHelper = ItemTouchHelper(myCallback)
@@ -106,8 +104,6 @@ class ShoppingCartActivity : AppCompatActivity() {
                 total_item.text = model.getTotalItem().toString()
                 total_price.text = model.getTotalPriceWithCurrency()
             })
-
-
         getShoppingCart()
     }
 
@@ -126,7 +122,6 @@ class ShoppingCartActivity : AppCompatActivity() {
             try {
                 completedTask.getResult(ApiException::class.java)?.let(::setGooglePayAvailable)
             } catch (exception: ApiException) {
-                // Process error
                 Log.w("isReadyToPay failed", exception)
             }
         }
@@ -157,7 +152,6 @@ class ShoppingCartActivity : AppCompatActivity() {
 
     public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
-
             LOAD_PAYMENT_DATA_REQUEST_CODE -> {
                 when (resultCode) {
                     Activity.RESULT_OK ->
@@ -165,10 +159,7 @@ class ShoppingCartActivity : AppCompatActivity() {
                             PaymentData.getFromIntent(intent)?.let(::handlePaymentSuccess)
                         }
                     Activity.RESULT_CANCELED -> {
-                        // Nothing to do here normally - the user simply cancelled without selecting a
-                        // payment method.
                     }
-
                     AutoResolveHelper.RESULT_ERROR -> {
                         AutoResolveHelper.getStatusFromIntent(data)?.let {
                             handleError(it.statusCode)
@@ -185,9 +176,7 @@ class ShoppingCartActivity : AppCompatActivity() {
 
         try {
             val paymentMethodData = JSONObject(paymentInformation).getJSONObject("paymentMethodData")
-
             val billingAddress = paymentMethodData.getJSONObject("info").getJSONObject("billingAddress")
-
             val deliveryAddress = Address(
                 billingAddress.getString("locality"),
                 billingAddress.getString("postalCode"),
@@ -195,15 +184,7 @@ class ShoppingCartActivity : AppCompatActivity() {
             )
 
             val googlePaymentToken = paymentMethodData.getJSONObject("tokenizationData").getString("token")
-
-            Log.d("GooglePaymentToken", googlePaymentToken)
-            Toast.makeText(
-                this,
-                getString(R.string.payments_show_name, billingAddress.getString("name")),
-                Toast.LENGTH_LONG
-            ).show()
             model.payForOrder(deliveryAddress, googlePaymentToken)
-
 
         } catch (e: JSONException) {
             Log.e("handlePaymentSuccess", "Error: $e")

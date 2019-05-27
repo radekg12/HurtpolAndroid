@@ -9,9 +9,9 @@ import retrofit2.http.Query
 
 interface ProductService {
 
-    @GET("/products")
+    @GET("products")
     fun getProducts(@Query("page") pageNumber: Int, @Query("size") pageSize: Int): Call<ProductPage>
 
-    @GET("/products/detail/{id}")
+    @GET("products/detail/{id}")
     fun getProductByID(@Path("id") id: Int): Call<Product>
 }

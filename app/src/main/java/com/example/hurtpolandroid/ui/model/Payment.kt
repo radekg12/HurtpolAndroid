@@ -3,7 +3,7 @@ package com.example.hurtpolandroid.ui.model
 
 data class PaymentRequest(
     val address: Address,
-    val googlePayToken: String
+    val googlePaymentTokenBase64: String
 )
 
 data class Address(
@@ -14,5 +14,11 @@ data class Address(
 
 data class PaymentResponse(
     val orderId: String,
-    val redirectUri: String
+    val redirectUri: String,
+    val status: PaymentStatus
+)
+
+data class PaymentStatus(
+    val statusCode: String,
+    val statusDesc: String
 )
