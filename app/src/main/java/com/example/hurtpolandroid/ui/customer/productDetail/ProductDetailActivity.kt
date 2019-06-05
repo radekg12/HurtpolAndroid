@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.hurtpolandroid.R
 import com.example.hurtpolandroid.ui.customer.home.HomeActivity
-import com.example.hurtpolandroid.ui.customer.utils.InjectionUtils
+import com.example.hurtpolandroid.ui.utils.InjectionUtils
 import com.example.hurtpolandroid.ui.customer.viewmodels.ProductDetailViewModel
 import com.example.hurtpolandroid.ui.model.Product
 import kotlinx.android.synthetic.main.activity_product_detail.*

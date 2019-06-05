@@ -1,4 +1,4 @@
-package com.example.hurtpolandroid.ui.customer.utils
+package com.example.hurtpolandroid.ui.utils
 
 import android.content.Context
 import com.example.hurtpolandroid.ui.customer.viewmodels.ProductViewModelFactory
@@ -15,6 +15,7 @@ object InjectionUtils {
         context: Context,
         productId: Int
     ): ProductViewModelFactory {
-        return ProductViewModelFactory(context, getProductRepository(context), productId)
+        return ProductViewModelFactory(context,
+            getProductRepository(context), productId)
     }
 }
