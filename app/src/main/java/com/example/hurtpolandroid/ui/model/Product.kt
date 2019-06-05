@@ -1,6 +1,7 @@
 package com.example.hurtpolandroid.ui.model
 
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "product")
@@ -11,11 +12,10 @@ data class Product(
     var company: String,
     var quantityInStock: Int,
     var unitPrice: Int,
-    var imageUrl: String
-
-    //@Relation(parentColumn = "id", entityColumn =  "productId")
-    //var specificationPositions: List<Specification>
+    var imageUrl: String,
+    @Ignore var specificationPositions: List<Specification>
 ) {
-    constructor() : this(0, "", "", "", 0, 0, "")
+    constructor() : this(0, "", "", "", 0,
+        0, "", emptyList())
 }
 

@@ -6,6 +6,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import com.example.hurtpolandroid.ui.model.Product
 import com.example.hurtpolandroid.ui.model.ProductRepository
+import com.example.hurtpolandroid.ui.model.Specification
 import com.example.hurtpolandroid.ui.service.ShoppingCartService
 import com.example.hurtpolandroid.ui.utils.HurtpolServiceGenerator
 import retrofit2.Call
@@ -24,6 +25,10 @@ class ProductDetailViewModel(
 
     fun getProductDetail(): LiveData<Product> {
         return productRepository.getProduct(productId)
+    }
+
+    fun getProductSpecification(): LiveData<List<Specification>> {
+        return productRepository.getSpecification(productId)
     }
 
     fun addProductToShoppingCart(productId: Int) {

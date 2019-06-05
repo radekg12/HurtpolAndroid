@@ -22,6 +22,11 @@ class ProductRepository @Inject constructor(
         return productDao.load(productId)
     }
 
+    fun getSpecification(productId: Int): LiveData<List<Specification>> {
+        refreshProduct(productId)
+        return productDao.getProductSpecification(productId)
+    }
+
     private fun refreshProduct(productId: Int) {
         val productExists = productDao.hasProduct(productId)
         logger.info("Product exists $productExists")
@@ -32,7 +37,7 @@ class ProductRepository @Inject constructor(
                 }
 
                 override fun onResponse(call: Call<Product>, response: Response<Product>) {
-                    productDao.save(response.body()!!)
+                    productDao.insertProductWithSpecification(response.body()!!)
                 }
             })
         }

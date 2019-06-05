@@ -5,8 +5,8 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "specification")
 data class Specification(
-    @PrimaryKey val id: Int,
-    val name: String,
-    val value: String,
-    val productId: Int
+    @PrimaryKey var id: Int,
+    var name: String,
+    var value: String,
+    var productId: Int
 )

@@ -12,12 +12,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.hurtpolandroid.R
 import com.example.hurtpolandroid.ui.customer.home.HomeActivity
-import com.example.hurtpolandroid.ui.utils.InjectionUtils
 import com.example.hurtpolandroid.ui.customer.viewmodels.ProductDetailViewModel
 import com.example.hurtpolandroid.ui.model.Product
+import com.example.hurtpolandroid.ui.model.Specification
+import com.example.hurtpolandroid.ui.utils.InjectionUtils
 import kotlinx.android.synthetic.main.activity_product_detail.*
 import kotlinx.android.synthetic.main.content_product_detail.*
-import java.lang.Exception
 import java.text.NumberFormat
 import java.util.logging.Logger
 
@@ -73,17 +73,18 @@ class ProductDetailActivity : AppCompatActivity() {
                     Glide.with(this@ProductDetailActivity)
                         .load(productDetail.imageUrl)
                         .into(product_image)
-
-                    /*if (productDetail.specificationPositions.isNotEmpty()) {
-                specification_sec.visibility = View.VISIBLE
-                specification.adapter =
-                    SpecificationAdapter(this@ProductDetailActivity, productDetail.specificationPositions)
-            }*/
                 } else {
                     product_desc.text = getString(R.string.null_product_id)
                 }
                 loadingProduct.visibility = View.GONE
             })
+
+            model.getProductSpecification().observe(this, Observer<List<Specification>> {
+                specification_sec.visibility = View.VISIBLE
+                specification.adapter =
+                    SpecificationAdapter(this@ProductDetailActivity, it)
+            })
+
         } catch (ex: Exception) {
             logger.warning(ex.toString())
             Toast.makeText(
