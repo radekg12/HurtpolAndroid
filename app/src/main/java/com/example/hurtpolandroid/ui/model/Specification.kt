@@ -1,16 +1,12 @@
 package com.example.hurtpolandroid.ui.model
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.ForeignKey
+import androidx.room.PrimaryKey
 
-@Entity(
-    tableName = "specification",
-    foreignKeys = [ForeignKey(entity = Product::class, parentColumns = ["id"], childColumns = ["product_id"])]
-)
+@Entity(tableName = "specification")
 data class Specification(
-    val id: Int,
+    @PrimaryKey val id: Int,
     val name: String,
     val value: String,
-    @ColumnInfo(name = "product_id") val productId: Int
+    val productId: Int
 )
