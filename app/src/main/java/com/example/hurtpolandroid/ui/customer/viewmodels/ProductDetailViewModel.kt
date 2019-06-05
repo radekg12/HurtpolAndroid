@@ -1,24 +1,29 @@
-package com.example.hurtpolandroid.ui.customer.productDetail
+package com.example.hurtpolandroid.ui.customer.viewmodels
 
 import android.content.Context
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import com.example.hurtpolandroid.ui.model.Product
-import com.example.hurtpolandroid.ui.service.ProductService
+import com.example.hurtpolandroid.ui.model.ProductRepository
 import com.example.hurtpolandroid.ui.service.ShoppingCartService
 import com.example.hurtpolandroid.ui.utils.HurtpolServiceGenerator
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class ProductDetailViewModel(context: Context) : ViewModel() {
+class ProductDetailViewModel(
+    context: Context,
+    private val productRepository: ProductRepository,
+    private val productId: Int
+) : ViewModel() {
+
     var shoppingCartResponse: MediatorLiveData<Product> = MediatorLiveData()
     private var shoppingCartService =
         HurtpolServiceGenerator().createServiceWithToken(ShoppingCartService::class.java, context)
-    private var productService = HurtpolServiceGenerator().createService(ProductService::class.java)
 
-    fun getProductDetail(productID: Int): Call<Product> {
-        return productService.getProductByID(productID)
+    fun getProductDetail(): LiveData<Product> {
+        return productRepository.getProduct(productId)
     }
 
     fun addProductToShoppingCart(productId: Int) {

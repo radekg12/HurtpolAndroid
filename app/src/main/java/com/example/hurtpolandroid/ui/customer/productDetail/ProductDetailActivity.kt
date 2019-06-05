@@ -1,7 +1,6 @@
 package com.example.hurtpolandroid.ui.customer.productDetail
 
 import android.os.Bundle
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -9,16 +8,12 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bumptech.glide.Glide
 import com.example.hurtpolandroid.R
 import com.example.hurtpolandroid.ui.customer.home.HomeActivity
+import com.example.hurtpolandroid.ui.customer.viewmodels.ProductDetailViewModel
 import com.example.hurtpolandroid.ui.model.Product
 import kotlinx.android.synthetic.main.activity_product_detail.*
 import kotlinx.android.synthetic.main.content_product_detail.*
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import java.text.NumberFormat
 import java.util.logging.Logger
 
 
@@ -47,7 +42,7 @@ class ProductDetailActivity : AppCompatActivity() {
             Toast.makeText(this, getString(R.string.null_product_id), Toast.LENGTH_LONG).show()
             finish()
         } else {
-            getProductDetail(productID)
+            getProductDetail()
         }
         add_product_button.setOnClickListener {
             model.addProductToShoppingCart(productID)
@@ -65,38 +60,8 @@ class ProductDetailActivity : AppCompatActivity() {
 
     }
 
-    private fun getProductDetail(productID: Int) {
-        model.getProductDetail(productID).enqueue(object : Callback<Product> {
-            override fun onFailure(call: Call<Product>, t: Throwable) {
-                Toast.makeText(this@ProductDetailActivity, getString(R.string.server_error), Toast.LENGTH_LONG).show()
-                loadingProduct.visibility = View.GONE
-                logger.warning(t.printStackTrace().toString())
-            }
-
-            override fun onResponse(call: Call<Product>, response: Response<Product>) {
-                productDetail = response.body()!!
-                if (productDetail != null) {
-                    toolbar.title = productDetail?.name
-                    product_name.text = productDetail?.name
-                    product_desc.text = productDetail?.description
-                    val format = NumberFormat.getCurrencyInstance()
-                    val currency = format.format(productDetail?.unitPrice?.div(100))
-                    product_price.text = currency
-                    Glide.with(this@ProductDetailActivity)
-                        .load(productDetail?.imageUrl)
-                        .into(product_image)
-
-                    if (productDetail!!.specificationPositions.isNotEmpty()) {
-                        specification_sec.visibility = View.VISIBLE
-                        specification.adapter =
-                            SpecificationAdapter(this@ProductDetailActivity, productDetail?.specificationPositions!!)
-                    }
-                } else {
-                    product_desc.text = getString(R.string.null_product_id)
-                }
-                loadingProduct.visibility = View.GONE
-            }
-        })
+    private fun getProductDetail() {
+        model.getProductDetail()
     }
 
 

@@ -1,26 +1,23 @@
 package com.example.hurtpolandroid.ui.model
 
-data class ProductPage(
-    val content: List<Product>,
-    val empty: Boolean,
-    val first: Boolean,
-    val last: Boolean,
-    val number: Int,
-    val numberOfElements: Int,
-    val size: Int,
-    val totalElements: Int,
-    val totalPages: Int
-)
+import androidx.room.Entity
+import androidx.room.Ignore
+import androidx.room.PrimaryKey
+import androidx.room.Relation
 
+@Entity(tableName = "product")
 data class Product(
-    val id: Int,
-    val name: String,
-    val description: String,
-    val company: String,
-    val quantityInStock: Int,
-    val unitPrice: Int,
-    val imageUrl: String,
-    val specificationPositions: List<Specification>
-)
+    @PrimaryKey var id: Int,
+    var name: String,
+    var description: String,
+    var company: String,
+    var quantityInStock: Int,
+    var unitPrice: Int,
+    var imageUrl: String,
 
-data class Specification(val id: Int, val name: String, val value: String)
+    @Relation(parentColumn = "id", entityColumn =  "product_id")
+    val specificationPositions: List<Specification>
+) {
+    constructor() : this(0, "", "", "", 0, 0, "", emptyList())
+}
+
