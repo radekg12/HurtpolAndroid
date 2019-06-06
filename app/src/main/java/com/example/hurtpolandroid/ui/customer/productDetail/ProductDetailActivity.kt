@@ -23,7 +23,7 @@ import java.util.logging.Logger
 
 class ProductDetailActivity : AppCompatActivity() {
 
-    val logger: Logger = Logger.getLogger(ProductDetailActivity::class.java.name)
+    private val logger: Logger = Logger.getLogger(ProductDetailActivity::class.java.name)
     lateinit var model: ProductDetailViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {

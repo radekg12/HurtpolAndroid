@@ -14,8 +14,8 @@ import javax.inject.Singleton
 class ProductRepository @Inject constructor(
     private val productDao: ProductDao
 ) {
-    val logger: Logger = Logger.getLogger(ProductRepository::class.java.name)
-    val productService = HurtpolServiceGenerator().createService(ProductService::class.java)
+    private val logger: Logger = Logger.getLogger(ProductRepository::class.java.name)
+    private val productService = HurtpolServiceGenerator().createService(ProductService::class.java)
 
     fun getProduct(productId: Int): LiveData<Product> {
         refreshProduct(productId)

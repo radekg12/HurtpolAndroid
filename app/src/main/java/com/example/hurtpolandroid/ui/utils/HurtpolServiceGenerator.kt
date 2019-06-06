@@ -48,7 +48,7 @@ class HurtpolServiceGenerator {
         return retrofit.create(serviceClass)
     }
 
-    fun getToken(context: Context): String {
+    private fun getToken(context: Context): String {
         val preferences = context.getSharedPreferences("myPrefs", Context.MODE_PRIVATE)
         return preferences.getString("token", "")
     }
