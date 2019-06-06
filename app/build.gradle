@@ -64,4 +64,5 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:3.9.1'
 
     implementation "com.google.android.gms:play-services-wallet:16.0.1"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.2.1"
 }
