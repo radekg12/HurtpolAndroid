@@ -25,13 +25,13 @@ interface ProductDao {
     fun save(product: Product)
 
     @Query("SELECT * FROM product WHERE id = :productId")
-    fun load(productId: Int): LiveData<Product>
+    fun getByID(productId: Int): LiveData<Product>
 
     @Query("SELECT COUNT(*) FROM product WHERE id = :productId")
     fun hasProduct(productId: Int): Int
 
     @Query("SELECT * FROM specification WHERE productId = :productId")
-    fun getProductSpecification(productId: Int): LiveData<List<Specification>>
+    fun getBySpecificationId(productId: Int): LiveData<List<Specification>>
 
     @Insert(onConflict = REPLACE)
     fun insert(product: Product)

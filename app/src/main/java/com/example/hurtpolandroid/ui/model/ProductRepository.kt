@@ -19,12 +19,12 @@ class ProductRepository @Inject constructor(
 
     fun getProduct(productId: Int): LiveData<Product> {
         refreshProduct(productId)
-        return productDao.load(productId)
+        return productDao.getByID(productId)
     }
 
     fun getSpecification(productId: Int): LiveData<List<Specification>> {
         refreshProduct(productId)
-        return productDao.getProductSpecification(productId)
+        return productDao.getBySpecificationId(productId)
     }
 
     private fun refreshProduct(productId: Int) {
