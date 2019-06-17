@@ -13,7 +13,7 @@ data class Product(
     var quantityInStock: Int,
     var unitPrice: Int,
     var imageUrl: String,
-    @Ignore var specificationPositions: List<Specification>
+    @Ignore var specificationPositions: List<Specification> = emptyList()
 ) {
     constructor() : this(0, "", "", "", 0, 0, "", emptyList())
 }
