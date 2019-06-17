@@ -4,11 +4,11 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
-import com.example.hurtpolandroid.ui.model.Product
-import com.example.hurtpolandroid.ui.model.ProductRepository
-import com.example.hurtpolandroid.ui.model.Specification
-import com.example.hurtpolandroid.ui.service.ShoppingCartService
-import com.example.hurtpolandroid.ui.utils.HurtpolServiceGenerator
+import com.example.hurtpolandroid.data.ProductRepository
+import com.example.hurtpolandroid.data.model.Product
+import com.example.hurtpolandroid.data.model.Specification
+import com.example.hurtpolandroid.service.ShoppingCartService
+import com.example.hurtpolandroid.utils.HurtpolServiceGenerator
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -32,7 +32,7 @@ class ProductDetailViewModel(
     }
 
     fun addProductToShoppingCart(productId: Int) {
-        shoppingCartService.addProduct(productId).enqueue(object : Callback<Product> {
+        shoppingCartService.addShoppingCardItem(productId).enqueue(object : Callback<Product> {
             override fun onFailure(call: Call<Product>, t: Throwable) {
 
             }

@@ -10,8 +10,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.hurtpolandroid.R
+import com.example.hurtpolandroid.data.model.Product
 import com.example.hurtpolandroid.ui.customer.productDetail.ProductDetailActivity
-import com.example.hurtpolandroid.ui.model.Product
 import java.text.NumberFormat
 
 
@@ -19,7 +19,6 @@ class ProductAdapter(val context: Context, private val productList: List<Product
     RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
-        //inflating and returning our view holder
         val inflater = LayoutInflater.from(context)
         val view = inflater.inflate(R.layout.layout_product, null)
         return ProductViewHolder(view)
@@ -30,10 +29,8 @@ class ProductAdapter(val context: Context, private val productList: List<Product
     }
 
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
-        //getting the product of the specified position
         val product = productList[position]
 
-        //binding the data with the viewholder views
         holder.textViewTitle.text = product.name
         holder.textViewShortDesc.text = product.description
         val format = NumberFormat.getCurrencyInstance()
@@ -51,6 +48,10 @@ class ProductAdapter(val context: Context, private val productList: List<Product
     }
 
     private fun productOnClick(productID: Int) {
+        navigateToProduct(productID)
+    }
+
+    private fun navigateToProduct(productID: Int) {
         val intent = Intent(context, ProductDetailActivity::class.java).apply {
             putExtra(HomeActivity.PRODUCT_ID_MESSAGE, productID)
         }

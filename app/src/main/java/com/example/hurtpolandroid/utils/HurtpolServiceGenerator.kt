@@ -1,4 +1,4 @@
-package com.example.hurtpolandroid.ui.utils
+package com.example.hurtpolandroid.utils
 
 import android.content.Context
 import okhttp3.OkHttpClient
@@ -13,7 +13,7 @@ class HurtpolServiceGenerator {
     //    private val BASE_URL = "http://192.168.0.102:8080/user-portal/"
     private var logging = HttpLoggingInterceptor()
 
-    private val builder = Retrofit.Builder()
+    private val retrofitBuilder = Retrofit.Builder()
         .baseUrl(BASE_URL)
         .addCallAdapterFactory(
             RxJava2CallAdapterFactory.create()
@@ -21,8 +21,7 @@ class HurtpolServiceGenerator {
         .client(OkHttpClient.Builder().build())
         .addConverterFactory(GsonConverterFactory.create())
 
-    private var retrofit = builder.build()
-
+    private var retrofit = retrofitBuilder.build()
     private val httpClient = OkHttpClient.Builder()
 
     fun <S> createService(serviceClass: Class<S>): S {
@@ -37,20 +36,21 @@ class HurtpolServiceGenerator {
             httpClient.interceptors().clear()
             httpClient.addInterceptor { chain ->
                 val original = chain.request()
-                val builder1 = original.newBuilder()
-                    .header("Authorization", "Bearer $token")
-                val request = builder1.build()
+                val requestBuilder = original.newBuilder()
+                    .addHeader("Authorization", "Bearer $token")
+                    .addHeader("Content-Type", "application/json")
+                val request = requestBuilder.build()
                 chain.proceed(request)
             }
-            builder.client(httpClient.build())
-            retrofit = builder.build()
+            retrofitBuilder.client(httpClient.build())
+            retrofit = retrofitBuilder.build()
         }
         return retrofit.create(serviceClass)
     }
 
     private fun getToken(context: Context): String {
         val preferences = context.getSharedPreferences("myPrefs", Context.MODE_PRIVATE)
-        return preferences.getString("token", "")
+        return preferences?.getString("token", "").orEmpty()
     }
 
 

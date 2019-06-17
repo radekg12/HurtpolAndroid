@@ -3,7 +3,7 @@ package com.example.hurtpolandroid.ui.customer.viewmodels
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.hurtpolandroid.ui.model.ProductRepository
+import com.example.hurtpolandroid.data.ProductRepository
 
 class ProductViewModelFactory(
     private val context: Context,

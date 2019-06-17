@@ -10,11 +10,11 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.hurtpolandroid.R
+import com.example.hurtpolandroid.data.model.ShoppingCartItem
+import com.example.hurtpolandroid.service.ShoppingCartService
 import com.example.hurtpolandroid.ui.customer.home.HomeActivity
 import com.example.hurtpolandroid.ui.customer.productDetail.ProductDetailActivity
-import com.example.hurtpolandroid.ui.model.ShoppingCartItem
-import com.example.hurtpolandroid.ui.service.ShoppingCartService
-import com.example.hurtpolandroid.ui.utils.HurtpolServiceGenerator
+import com.example.hurtpolandroid.utils.HurtpolServiceGenerator
 import com.google.android.material.button.MaterialButton
 import java.text.NumberFormat
 
@@ -27,13 +27,12 @@ class ShoppingCartAdapter(
     RecyclerView.Adapter<ShoppingCartAdapter.ProductViewHolder>() {
 
     interface OnItemClickListener {
-        fun onBtnPlusClick(item: ShoppingCartItem)
-        fun onBtnMinusClick(item: ShoppingCartItem)
+        fun onBtnIncrementItemClick(item: ShoppingCartItem)
+        fun onBtnDecrementItemClick(item: ShoppingCartItem)
     }
 
     val service = HurtpolServiceGenerator().createServiceWithToken(ShoppingCartService::class.java, context)
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
-        //inflating and returning our view holder
         val inflater = LayoutInflater.from(context)
         val view = inflater.inflate(R.layout.layout_cart_item, null)
         return ProductViewHolder(view)
@@ -44,34 +43,26 @@ class ShoppingCartAdapter(
     }
 
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
-        //getting the product of the specified position
         val cart = shoppingCart[position]
 
-        //binding the data with the viewholder views
         holder.textViewTitle.text = cart.product.name
         val format = NumberFormat.getCurrencyInstance()
         val currency = format.format(cart.product.unitPrice.div(100))
         holder.textViewPrice.text = currency
         holder.quantity.text = cart.quantity.toString()
 
-        Glide.with(context)
-            .load(cart.product.imageUrl)
-            .into(holder.imageView)
+        Glide.with(context).load(cart.product.imageUrl).into(holder.imageView)
 
         if (cart.quantity == 1)
             holder.minus.isEnabled = false
 
-//        holder.itemView.setOnClickListener {
-//            productOnClick(cart.product.id)
-//        }
-
         holder.plus.setOnClickListener {
-            listener.onBtnPlusClick(cart)
+            listener.onBtnIncrementItemClick(cart)
         }
 
         holder.minus.setOnClickListener {
             if (cart.quantity > 1)
-                listener.onBtnMinusClick(cart)
+                listener.onBtnDecrementItemClick(cart)
         }
 
     }

@@ -11,11 +11,11 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.hurtpolandroid.R
+import com.example.hurtpolandroid.data.model.Product
+import com.example.hurtpolandroid.data.model.Specification
 import com.example.hurtpolandroid.ui.customer.home.HomeActivity
 import com.example.hurtpolandroid.ui.customer.viewmodels.ProductDetailViewModel
-import com.example.hurtpolandroid.ui.model.Product
-import com.example.hurtpolandroid.ui.model.Specification
-import com.example.hurtpolandroid.ui.utils.InjectionUtils
+import com.example.hurtpolandroid.utils.InjectionUtils
 import kotlinx.android.synthetic.main.activity_product_detail.*
 import kotlinx.android.synthetic.main.content_product_detail.*
 import java.text.NumberFormat
@@ -30,25 +30,21 @@ class ProductDetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_product_detail)
         setSupportActionBar(toolbar)
-
-
-        val linearManager = LinearLayoutManager(this)
-        specification.setHasFixedSize(true)
-        specification.layoutManager = linearManager
-        specification.itemAnimator = DefaultItemAnimator()
-        specification.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
-        ViewCompat.setNestedScrollingEnabled(specification, false)
+        initSpecificationView()
 
         val productID = intent?.extras!!.getInt(HomeActivity.PRODUCT_ID_MESSAGE)
         model = InjectionUtils.provideProductDetailViewModelFactory(this, productID)
             .create(ProductDetailViewModel::class.java)
         getProductDetail()
-
         add_product_button.setOnClickListener {
             model.addProductToShoppingCart(productID)
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        observeShoppingCart()
 
+    }
+
+    private fun observeShoppingCart() {
         model.shoppingCartResponse.observe(this,
             Observer<Product> {
                 Toast.makeText(
@@ -57,25 +53,24 @@ class ProductDetailActivity : AppCompatActivity() {
                     Toast.LENGTH_LONG
                 ).show()
             })
+    }
 
+    private fun initSpecificationView() {
+        val linearManager = LinearLayoutManager(this)
+        specification.setHasFixedSize(true)
+        specification.layoutManager = linearManager
+        specification.itemAnimator = DefaultItemAnimator()
+        specification.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
+        ViewCompat.setNestedScrollingEnabled(specification, false)
     }
 
     private fun getProductDetail() {
         try {
             model.getProductDetail().observe(this, Observer<Product> { productDetail ->
-                if (productDetail != null) {
-                    toolbar.title = productDetail.name
-                    product_name.text = productDetail.name
-                    product_desc.text = productDetail.description
-                    val format = NumberFormat.getCurrencyInstance()
-                    val currency = format.format(productDetail.unitPrice.div(100))
-                    product_price.text = currency
-                    Glide.with(this@ProductDetailActivity)
-                        .load(productDetail.imageUrl)
-                        .into(product_image)
-                } else {
+                if (productDetail != null)
+                    setProductDetail(productDetail)
+                else
                     product_desc.text = getString(R.string.null_product_id)
-                }
                 loadingProduct.visibility = View.GONE
             })
 
@@ -94,5 +89,17 @@ class ProductDetailActivity : AppCompatActivity() {
             ).show()
         }
 
+    }
+
+    private fun setProductDetail(productDetail: Product) {
+        toolbar.title = productDetail.name
+        product_name.text = productDetail.name
+        product_desc.text = productDetail.description
+        val format = NumberFormat.getCurrencyInstance()
+        val currency = format.format(productDetail.unitPrice.div(100))
+        product_price.text = currency
+        Glide.with(this@ProductDetailActivity)
+            .load(productDetail.imageUrl)
+            .into(product_image)
     }
 }

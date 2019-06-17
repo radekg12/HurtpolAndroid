@@ -1,4 +1,4 @@
-package com.example.hurtpolandroid.ui.model
+package com.example.hurtpolandroid.data.model
 
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
@@ -7,7 +7,9 @@ import androidx.lifecycle.Observer
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.runner.AndroidJUnit4
-import com.example.hurtpolandroid.ui.model.LiveDataTestUtil.getValue
+import com.example.hurtpolandroid.data.AppDatabase
+import com.example.hurtpolandroid.data.ProductDao
+import com.example.hurtpolandroid.data.model.LiveDataTestUtil.getValue
 import org.hamcrest.CoreMatchers.equalTo
 import org.junit.After
 import org.junit.Assert.assertThat
@@ -72,7 +74,8 @@ class ProductDaoTest {
             company = "cheese company sp z.o.o",
             quantityInStock = 5,
             unitPrice = 100,
-            imageUrl = "http://www.chesse.img"
+            imageUrl = "http://www.chesse.img",
+            specificationPositions = emptyList()
         )
         productDao.insert(product)
         val loaded = getValue(productDao.getByID(0))

@@ -5,11 +5,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import com.example.hurtpolandroid.R
-import com.example.hurtpolandroid.ui.model.CustomerDTO
+import com.example.hurtpolandroid.data.model.Customer
 import com.example.hurtpolandroid.ui.signin.SigninActivity
 import com.example.hurtpolandroid.ui.worker.OperationType
 import com.example.hurtpolandroid.ui.worker.scanner.ScannerActivity
@@ -21,10 +22,12 @@ import kotlinx.android.synthetic.main.nav_header_card_menu.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.logging.Logger
 
 
-class CardMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, Callback<CustomerDTO> {
+class CardMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, Callback<Customer> {
 
+    private val logger: Logger = Logger.getLogger(CardMenuActivity::class.java.name)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_card_menu)
@@ -36,7 +39,6 @@ class CardMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
-
         nav_view_worker.setNavigationItemSelectedListener(this)
 
         card1.setOnClickListener {
@@ -60,11 +62,16 @@ class CardMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
         cardMenuViewModel.getUser().enqueue(this)
     }
 
-    override fun onFailure(call: Call<CustomerDTO>, t: Throwable) {
-        println("blad")
+    override fun onFailure(call: Call<Customer>, t: Throwable) {
+        logger.warning(t.toString())
+        Toast.makeText(
+            this@CardMenuActivity,
+            getString(R.string.server_error),
+            Toast.LENGTH_LONG
+        ).show()
     }
 
-    override fun onResponse(call: Call<CustomerDTO>, response: Response<CustomerDTO>) {
+    override fun onResponse(call: Call<Customer>, response: Response<Customer>) {
         if (response.isSuccessful) {
             val fullName = response.body()?.firstName + " " + response.body()?.lastName
             worker_name.text = fullName
@@ -81,13 +88,11 @@ class CardMenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.card_menu, menu)
         return true
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        // Handle navigation view item clicks here.
         when (item.itemId) {
             R.id.nav_products -> {
                 changeActivity(OperationType.TAKE)

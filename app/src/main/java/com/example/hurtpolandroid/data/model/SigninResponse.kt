@@ -1,4 +1,4 @@
-package com.example.hurtpolandroid.ui.model
+package com.example.hurtpolandroid.data.model
 
 data class SigninResponse(
     val accessToken: String,

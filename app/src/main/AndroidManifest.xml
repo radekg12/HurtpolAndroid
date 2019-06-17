@@ -5,6 +5,7 @@
 
     <uses-permission android:name="android.permission.INTERNET"/>
 
+
     <application
             android:allowBackup="true"
             android:icon="@drawable/ic_web_hi_res_512"
@@ -13,6 +14,7 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             android:usesCleartextTraffic="true">
+
         <activity android:name=".ui.customer.shoppingCart.ShoppingCartActivity">
         </activity>
         <activity
@@ -39,19 +41,23 @@
                 android:name=".ui.worker.cardmenu.CardMenuActivity"
                 android:label="@string/title_activity_card_menu">
 
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN"/> -->
-
-
-            <!-- <category android:name="android.intent.category.LAUNCHER"/> -->
-            <!-- </intent-filter> -->
         </activity>
         <activity
                 android:name="com.journeyapps.barcodescanner.CaptureActivity"
                 android:screenOrientation="fullSensor"
                 tools:replace="screenOrientation"/>
-        <activity android:name=".ui.customer.home.HomeActivity"/>
-        <!-- This element is required in order to use the PaymentsClient -->
+        <activity
+                android:name=".ui.customer.home.HomeActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data
+                        android:scheme="https"
+                        android:host="radekg12.github.io"
+                        android:pathPattern="/pi-front/home"/>
+            </intent-filter>
+        </activity> <!-- This element is required in order to use the PaymentsClient -->
         <meta-data
                 android:name="com.google.android.gms.wallet.api.enabled"
                 android:value="true"/>

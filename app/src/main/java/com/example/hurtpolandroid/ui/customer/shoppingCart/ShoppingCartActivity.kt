@@ -13,8 +13,8 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.*
 import com.example.hurtpolandroid.R
-import com.example.hurtpolandroid.ui.model.Address
-import com.example.hurtpolandroid.ui.model.ShoppingCartItem
+import com.example.hurtpolandroid.data.model.Address
+import com.example.hurtpolandroid.data.model.ShoppingCartItem
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.wallet.*
 import kotlinx.android.synthetic.main.activity_shopping_cart.*
@@ -34,18 +34,13 @@ class ShoppingCartActivity : AppCompatActivity() {
         setContentView(R.layout.activity_shopping_cart)
 
         model = ShoppingCartViewModel(this)
-        val linearManager = LinearLayoutManager(this)
-        recyclerView.setHasFixedSize(true)
-        recyclerView.layoutManager = linearManager
-        recyclerView.itemAnimator = DefaultItemAnimator()
-        recyclerView.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
+        initRecyclerView()
 
         paymentsClient = PaymentsUtil.createPaymentsClient(this)
         possiblyShowGooglePayButton()
 
         btn_pay.setOnClickListener {
-            it.isClickable = false
-            requestPayment()
+            onPayButtonClick(it)
         }
 
 
@@ -79,7 +74,6 @@ class ShoppingCartActivity : AppCompatActivity() {
                     0f, viewHolder.itemView.top.toFloat(),
                     dX, viewHolder.itemView.bottom.toFloat()
                 )
-                val display = windowManager.defaultDisplay
                 val background = ColorDrawable(ContextCompat.getColor(this@ShoppingCartActivity, R.color.alertColor))
                 background.setBounds(
                     0, viewHolder.itemView.top,
@@ -105,6 +99,19 @@ class ShoppingCartActivity : AppCompatActivity() {
                 total_price.text = model.getTotalPriceWithCurrency()
             })
         getShoppingCart()
+    }
+
+    private fun onPayButtonClick(it: View) {
+        it.isClickable = false
+        requestPayment()
+    }
+
+    private fun initRecyclerView() {
+        val linearManager = LinearLayoutManager(this)
+        recyclerView.setHasFixedSize(true)
+        recyclerView.layoutManager = linearManager
+        recyclerView.itemAnimator = DefaultItemAnimator()
+        recyclerView.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
     }
 
 
@@ -151,6 +158,7 @@ class ShoppingCartActivity : AppCompatActivity() {
     }
 
     public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             LOAD_PAYMENT_DATA_REQUEST_CODE -> {
                 when (resultCode) {

@@ -5,10 +5,10 @@ import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.hurtpolandroid.ui.model.*
-import com.example.hurtpolandroid.ui.service.PaymentService
-import com.example.hurtpolandroid.ui.service.ShoppingCartService
-import com.example.hurtpolandroid.ui.utils.HurtpolServiceGenerator
+import com.example.hurtpolandroid.data.model.*
+import com.example.hurtpolandroid.service.PaymentService
+import com.example.hurtpolandroid.service.ShoppingCartService
+import com.example.hurtpolandroid.utils.HurtpolServiceGenerator
 import com.github.kittinunf.fuel.util.encodeBase64ToString
 import retrofit2.Call
 import retrofit2.Callback
@@ -55,7 +55,7 @@ class ShoppingCartViewModel(val context: Context) : ViewModel(), ShoppingCartAda
     }
 
     fun removeProduct(position: Int) {
-        shoppingCartService.removeProduct(shoppingCart.value!![position].product.id)
+        shoppingCartService.removeShoppingCardItem(shoppingCart.value!![position].product.id)
             .enqueue(object : Callback<ShoppingCartItem> {
                 override fun onFailure(call: Call<ShoppingCartItem>, t: Throwable) {
                     println("1")
@@ -71,8 +71,8 @@ class ShoppingCartViewModel(val context: Context) : ViewModel(), ShoppingCartAda
             })
     }
 
-    private fun updateProductCount(cart: ShoppingCartItem, number: Int) {
-        shoppingCartService.updateProduct(ShoppingCartItemToUpdate(cart.product.id, cart.quantity + number))
+    private fun updateNumberOfProduct(cart: ShoppingCartItem, number: Int) {
+        shoppingCartService.updateShoppingCardItem(ShoppingCartItemToUpdate(cart.product.id, cart.quantity + number))
             .enqueue(object : Callback<ShoppingCartItem> {
                 override fun onFailure(call: Call<ShoppingCartItem>, t: Throwable) {
                     Toast.makeText(context, "Blad", Toast.LENGTH_LONG).show()
@@ -87,16 +87,16 @@ class ShoppingCartViewModel(val context: Context) : ViewModel(), ShoppingCartAda
             })
     }
 
-    private fun plusProduct(item: ShoppingCartItem) {
-        updateProductCount(item, 1)
+    private fun incrementProductItem(item: ShoppingCartItem) {
+        updateNumberOfProduct(item, 1)
     }
 
-    override fun onBtnMinusClick(item: ShoppingCartItem) {
-        updateProductCount(item, -1)
+    override fun onBtnDecrementItemClick(item: ShoppingCartItem) {
+        updateNumberOfProduct(item, -1)
     }
 
-    override fun onBtnPlusClick(item: ShoppingCartItem) {
-        plusProduct(item)
+    override fun onBtnIncrementItemClick(item: ShoppingCartItem) {
+        incrementProductItem(item)
     }
 
     fun toastOnDelete() {

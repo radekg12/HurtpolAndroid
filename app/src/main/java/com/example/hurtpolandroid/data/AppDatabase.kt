@@ -1,9 +1,11 @@
-package com.example.hurtpolandroid.ui.model
+package com.example.hurtpolandroid.data
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.example.hurtpolandroid.data.model.Product
+import com.example.hurtpolandroid.data.model.Specification
 
 @Database(entities = [Product::class, Specification::class], version = 1, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
@@ -17,7 +19,8 @@ abstract class AppDatabase : RoomDatabase() {
 
         fun getInstance(context: Context): AppDatabase {
             return instance ?: synchronized(this) {
-                instance ?: buildDatabase(context).also { instance = it }
+                instance
+                    ?: buildDatabase(context).also { instance = it }
             }
         }
 

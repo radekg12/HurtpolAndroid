@@ -1,4 +1,4 @@
-package com.example.hurtpolandroid.ui.model
+package com.example.hurtpolandroid.data.model
 
 import androidx.room.Entity
 import androidx.room.Ignore
@@ -15,7 +15,6 @@ data class Product(
     var imageUrl: String,
     @Ignore var specificationPositions: List<Specification>
 ) {
-    constructor() : this(0, "", "", "", 0,
-        0, "", emptyList())
+    constructor() : this(0, "", "", "", 0, 0, "", emptyList())
 }
 

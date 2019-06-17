@@ -55,4 +55,18 @@
     <string name="googlepay_button_content_description">Google Pay</string>
     <string name="buy_with_googlepay_button_content_description">Kup z Google Pay</string>
     <string name="payments_show_name" translatable="false">Successfully received payment data for %s!</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="maps">Mapy</string>
+    <string name="registration_completed">Rejestracja zakończona powodzeniem</string>
+    <string name="registration_failed">Rejestracja nieudana</string>
+    <string name="incorrect_email_address">Błędy adres e-mail</string>
+    <string name="input_first_name_error">Minimum 3 znaki</string>
+    <string name="input_last_name_error">Minimum 3 znaki</string>
+    <string name="input_password_error">Od 4 do 10 znaków</string>
+    <string name="canceled">Anulowano</string>
+    <string name="scanned">Zeskanowano:</string>
+    <string name="operation_completed">Operacja zakończona pomyślnie</string>
+    <string name="operationFailed">Operacja zakończona niepowodzeniem</string>
+    <string name="invalid_value">Błędna wartość</string>
+    <string name="login_failed">Logowanie nieudane</string>
 </resources>

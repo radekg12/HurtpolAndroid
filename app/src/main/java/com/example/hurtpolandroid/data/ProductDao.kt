@@ -1,4 +1,4 @@
-package com.example.hurtpolandroid.ui.model
+package com.example.hurtpolandroid.data
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
@@ -6,6 +6,8 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
 import androidx.room.Transaction
+import com.example.hurtpolandroid.data.model.Product
+import com.example.hurtpolandroid.data.model.Specification
 
 @Dao
 interface ProductDao {

@@ -3,10 +3,10 @@ package com.example.hurtpolandroid.ui.signin
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import com.auth0.android.jwt.JWT
-import com.example.hurtpolandroid.ui.model.SigninResponse
-import com.example.hurtpolandroid.ui.model.UserDTO
-import com.example.hurtpolandroid.ui.service.AuthenticationService
-import com.example.hurtpolandroid.ui.utils.HurtpolServiceGenerator
+import com.example.hurtpolandroid.data.model.SigninResponse
+import com.example.hurtpolandroid.data.model.UserDTO
+import com.example.hurtpolandroid.service.AuthenticationService
+import com.example.hurtpolandroid.utils.HurtpolServiceGenerator
 import retrofit2.Call
 import java.util.*
 

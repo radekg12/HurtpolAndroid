@@ -1,8 +1,10 @@
-package com.example.hurtpolandroid.ui.model
+package com.example.hurtpolandroid.data
 
 import androidx.lifecycle.LiveData
-import com.example.hurtpolandroid.ui.service.ProductService
-import com.example.hurtpolandroid.ui.utils.HurtpolServiceGenerator
+import com.example.hurtpolandroid.data.model.Product
+import com.example.hurtpolandroid.data.model.Specification
+import com.example.hurtpolandroid.service.ProductService
+import com.example.hurtpolandroid.utils.HurtpolServiceGenerator
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -31,7 +33,7 @@ class ProductRepository @Inject constructor(
         val productExists = productDao.hasProduct(productId)
         logger.info("Product exists $productExists")
         if (productExists == 0) {
-            productService.getProductByID(productId).enqueue(object : Callback<Product> {
+            productService.getProductById(productId).enqueue(object : Callback<Product> {
                 override fun onFailure(call: Call<Product>, t: Throwable) {
                     throw t
                 }
@@ -51,7 +53,8 @@ class ProductRepository @Inject constructor(
 
         fun getInstance(productDao: ProductDao) =
             instance ?: synchronized(this) {
-                instance ?: ProductRepository(productDao).also { instance = it }
+                instance
+                    ?: ProductRepository(productDao).also { instance = it }
             }
     }
 }

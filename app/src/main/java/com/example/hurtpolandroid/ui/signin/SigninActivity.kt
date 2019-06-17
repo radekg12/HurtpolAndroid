@@ -3,6 +3,7 @@ package com.example.hurtpolandroid.ui.signin
 import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.util.Patterns
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -10,10 +11,10 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.auth0.android.jwt.JWT
 import com.example.hurtpolandroid.R
+import com.example.hurtpolandroid.data.model.Authority
+import com.example.hurtpolandroid.data.model.Role
+import com.example.hurtpolandroid.data.model.SigninResponse
 import com.example.hurtpolandroid.ui.customer.home.HomeActivity
-import com.example.hurtpolandroid.ui.model.Authority
-import com.example.hurtpolandroid.ui.model.Role
-import com.example.hurtpolandroid.ui.model.SigninResponse
 import com.example.hurtpolandroid.ui.signup.SignupActivity
 import com.example.hurtpolandroid.ui.worker.cardmenu.CardMenuActivity
 import kotlinx.android.synthetic.main.activity_signin.*
@@ -35,10 +36,8 @@ class SigninActivity : AppCompatActivity(), Callback<SigninResponse> {
         }
 
         link_signup.setOnClickListener {
-            val intent = Intent(applicationContext, SignupActivity::class.java)
-            startActivityForResult(intent, 0)
+            navigateToSignup()
         }
-
 
         object : CountDownTimer(3000, 1000) {
             override fun onFinish() {
@@ -47,18 +46,21 @@ class SigninActivity : AppCompatActivity(), Callback<SigninResponse> {
                 if (!signinViewModel.isLogged(token))
                     slideUp(bookIconImageView)
                 else {
-                    //TODO autologowanie, poprawic jak nowe logowanie bedzie na prod
                     val jwt = JWT(token)
-                    val list = mutableListOf<Authority>()
-                    list.add(Authority(jwt.claims["auth"]?.asString().toString()))
-//                    list.add(Authority("ROLE_USER"))
-                    val data = SigninResponse(jwt.signature, "Bearer", true, list)
+                    val authorities = mutableListOf<Authority>()
+                    authorities.add(Authority(jwt.claims["auth"]?.asString().toString()))
+                    val data = SigninResponse(jwt.signature, "Bearer", true, authorities)
                     onLoginSuccess(data)
                 }
             }
 
             override fun onTick(p0: Long) {}
         }.start()
+    }
+
+    private fun navigateToSignup() {
+        val intent = Intent(applicationContext, SignupActivity::class.java)
+        startActivityForResult(intent, 0)
     }
 
     fun slideUp(view: View) {
@@ -79,14 +81,18 @@ class SigninActivity : AppCompatActivity(), Callback<SigninResponse> {
 
     private fun login() {
 
-        if (!validate())
+        if (!validateForm())
             onLoginFailed()
 
-        btn_login.isEnabled = false
-        loadingProgressBar.visibility = View.VISIBLE
+        showProgressBar()
         val email = input_email.text.toString()
         val password = input_password.text.toString()
         signinViewModel.login(email, password).enqueue(this)
+    }
+
+    private fun showProgressBar() {
+        btn_login.isEnabled = false
+        loadingProgressBar.visibility = View.VISIBLE
     }
 
     override fun onFailure(call: Call<SigninResponse>, t: Throwable) {
@@ -105,51 +111,68 @@ class SigninActivity : AppCompatActivity(), Callback<SigninResponse> {
 
     fun onLoginSuccess(data: SigninResponse) {
         btn_login.isEnabled = true
-        if (data.authorities.map { it.roleName }.any { it == Role.ROLE_ADMIN.name }) {
-            val intent = Intent(this, CardMenuActivity::class.java).apply {
-                putExtra("Token", data.accessToken)
-            }
-            startActivity(intent)
-        } else if (data.authorities.map { it.roleName }.any { it == Role.ROLE_USER.name }) {
-            val intent = Intent(this, HomeActivity::class.java).apply {
-                putExtra("Token", data.accessToken)
-            }
-            startActivity(intent)
+        if (hasWorkerRole(data)) {
+            navigateToWorkerPanel(data)
+        } else if (hasUserRole(data)) {
+            navigateToCustomerPanel(data)
         }
     }
 
+    private fun navigateToCustomerPanel(data: SigninResponse) {
+        val intent = Intent(this, HomeActivity::class.java).apply {
+            putExtra("Token", data.accessToken)
+        }
+        startActivity(intent)
+    }
+
+    private fun hasUserRole(data: SigninResponse) =
+        data.authorities.map { it.roleName }.any { it == Role.ROLE_USER.name }
+
+    private fun hasWorkerRole(data: SigninResponse) =
+        data.authorities.map { it.roleName }.any { it == Role.ROLE_WORKER.name }
+
+    private fun navigateToWorkerPanel(data: SigninResponse) {
+        val intent = Intent(this, CardMenuActivity::class.java).apply {
+            putExtra("Token", data.accessToken)
+        }
+        startActivity(intent)
+    }
+
     private fun onLoginFailed() {
-        Toast.makeText(baseContext, "Logowanie nieudane", Toast.LENGTH_LONG).show()
+        Toast.makeText(baseContext, getString(R.string.login_failed), Toast.LENGTH_LONG).show()
         loadingProgressBar.visibility = View.GONE
         btn_login.isEnabled = true
     }
 
     private fun onServerProblems() {
-        Toast.makeText(baseContext, "Błąd serwera", Toast.LENGTH_LONG).show()
+        Toast.makeText(baseContext, getString(R.string.invalid_value), Toast.LENGTH_LONG).show()
         loadingProgressBar.visibility = View.GONE
         btn_login.isEnabled = true
     }
 
-    private fun validate(): Boolean {
-        var valid = true
-
+    private fun validateForm(): Boolean {
         val email = input_email.text.toString()
         val password = input_password.text.toString()
+        return validateEmail(email) && validatePassword(password)
+    }
 
-        if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            input_email.error = "Błędy adres e-maill"
-            valid = false
-        } else {
-            input_email.error = null
-        }
-
-        if (password.isEmpty() || password.length < 4 || password.length > 10) {
-            input_password.error = "Od 4 do 10 znaków"
-            valid = false
+    private fun validatePassword(password: String): Boolean {
+        return if (password.isEmpty() || password.length < 4 || password.length > 10) {
+            input_password.error = getString(R.string.input_password_error)
+            false
         } else {
             input_password.error = null
+            true
         }
+    }
 
-        return valid
+    private fun validateEmail(email: String): Boolean {
+        return if (email.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            input_email.error = getString(R.string.incorrect_email_address)
+            false
+        } else {
+            input_email.error = null
+            true
+        }
     }
 }

@@ -15,9 +15,9 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.hurtpolandroid.R
+import com.example.hurtpolandroid.data.model.Customer
+import com.example.hurtpolandroid.data.model.ProductPage
 import com.example.hurtpolandroid.ui.customer.shoppingCart.ShoppingCartActivity
-import com.example.hurtpolandroid.ui.model.CustomerDTO
-import com.example.hurtpolandroid.ui.model.ProductPage
 import com.example.hurtpolandroid.ui.signin.SigninActivity
 import com.example.hurtpolandroid.ui.worker.cardmenu.CardMenuViewModel
 import com.google.android.material.navigation.NavigationView
@@ -45,42 +45,54 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setContentView(R.layout.activity_home)
         setSupportActionBar(toolbar)
 
-        val toggle = ActionBarDrawerToggle(
-            this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
-        )
-        drawer_layout.addDrawerListener(toggle)
-        toggle.syncState()
+        initDrawer()
         homeViewModel = HomeViewModel(this)
         nav_view.setNavigationItemSelectedListener(this)
 
+        val linearManager = initRecyclerView()
+
+        val recyclerViewOnScrollListener = object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (hasNextPage())
+                    if (hasLastPosition(linearManager)) {
+                        recyclerView.setPadding(0, 0, 0, 100)
+                        getProducts()
+                    }
+            }
+        }
+        recyclerView.addOnScrollListener(recyclerViewOnScrollListener)
+        getUserData()
+        getProducts()
+    }
+
+    private fun hasNextPage() = !homeViewModel.currentPage.last && !loading
+
+    private fun hasLastPosition(linearManager: LinearLayoutManager): Boolean {
+        val visibleItemCount = linearManager.childCount
+        val totalItemCount = linearManager.itemCount
+        val firstVisibleItemPosition = linearManager.findFirstVisibleItemPosition()
+
+        return ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount && firstVisibleItemPosition >= 0)
+    }
+
+    private fun initDrawer() {
+        val drawerToggle = ActionBarDrawerToggle(
+            this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
+        )
+        drawer_layout.addDrawerListener(drawerToggle)
+        drawerToggle.syncState()
+    }
+
+
+    private fun initRecyclerView(): LinearLayoutManager {
         val linearManager = LinearLayoutManager(this)
         recyclerView.setHasFixedSize(true)
         recyclerView.adapter = ProductAdapter(this, homeViewModel.productList)
         recyclerView.layoutManager = linearManager
         recyclerView.itemAnimator = DefaultItemAnimator()
         recyclerView.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
-
-        val recyclerViewOnScrollListener = object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                val visibleItemCount = linearManager.childCount
-                val totalItemCount = linearManager.itemCount
-                val firstVisibleItemPosition = linearManager.findFirstVisibleItemPosition()
-
-                if (!homeViewModel.currentPage.last && !loading) {
-                    if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
-                        && firstVisibleItemPosition >= 0
-                    ) {
-                        recyclerView.setPadding(0, 0, 0, 100)
-                        getProducts()
-                    }
-                }
-            }
-        }
-        recyclerView.addOnScrollListener(recyclerViewOnScrollListener)
-
-        getUserData()
-        getProducts()
+        return linearManager
     }
 
     override fun onBackPressed() {
@@ -92,13 +104,11 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.home, menu)
         return true
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        // Handle navigation view item clicks here.
         when (item.itemId) {
             R.id.nav_products -> {
             }
@@ -130,27 +140,35 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         homeViewModel.getProducts(nextPage).enqueue(object : Callback<ProductPage> {
             override fun onFailure(call: Call<ProductPage>, t: Throwable) {
-                Toast.makeText(this@HomeActivity, getString(R.string.server_error), Toast.LENGTH_LONG).show()
-                loading = false
-                loadingProductsProgressBar.visibility = View.INVISIBLE
-                logger.warning(t.printStackTrace().toString())
+                onProductPageFailure(t)
             }
 
             override fun onResponse(call: Call<ProductPage>, response: Response<ProductPage>) {
-                homeViewModel.currentPage = response.body()!!
-                homeViewModel.currentPage.content.forEach { product -> homeViewModel.productList.add(product) }
-                recyclerView.adapter?.notifyDataSetChanged()
-                loading = false
-                recyclerView.setPadding(0, 0, 0, 0)
-                loadingProductsProgressBar.visibility = View.INVISIBLE
+                onProductPageResponse(response)
             }
         })
     }
 
+    private fun onProductPageFailure(t: Throwable) {
+        Toast.makeText(this@HomeActivity, getString(R.string.server_error), Toast.LENGTH_LONG).show()
+        loading = false
+        loadingProductsProgressBar.visibility = View.INVISIBLE
+        logger.warning(t.printStackTrace().toString())
+    }
+
+    private fun onProductPageResponse(response: Response<ProductPage>) {
+        homeViewModel.currentPage = response.body()!!
+        homeViewModel.currentPage.content.forEach { product -> homeViewModel.productList.add(product) }
+        recyclerView.adapter?.notifyDataSetChanged()
+        loading = false
+        recyclerView.setPadding(0, 0, 0, 0)
+        loadingProductsProgressBar.visibility = View.INVISIBLE
+    }
+
     private fun getUserData() {
         val cardMenuViewModel = CardMenuViewModel(this)
-        cardMenuViewModel.getUser().enqueue(object : Callback<CustomerDTO> {
-            override fun onResponse(call: Call<CustomerDTO>, response: Response<CustomerDTO>) {
+        cardMenuViewModel.getUser().enqueue(object : Callback<Customer> {
+            override fun onResponse(call: Call<Customer>, response: Response<Customer>) {
                 if (response.isSuccessful) {
                     val fullName = response.body()?.firstName + " " + response.body()?.lastName
                     user_name.text = fullName
@@ -158,7 +176,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }
             }
 
-            override fun onFailure(call: Call<CustomerDTO>, t: Throwable) {
+            override fun onFailure(call: Call<Customer>, t: Throwable) {
                 logger.warning(t.printStackTrace().toString())
             }
         })
