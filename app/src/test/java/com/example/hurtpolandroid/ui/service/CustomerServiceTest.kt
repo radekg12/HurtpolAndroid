@@ -1,5 +1,5 @@
-import com.example.hurtpolandroid.ui.model.CustomerDTO
-import com.example.hurtpolandroid.ui.service.CustomerService
+import com.example.hurtpolandroid.data.model.Customer
+import com.example.hurtpolandroid.service.CustomerService
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.hamcrest.CoreMatchers.equalTo
@@ -28,7 +28,7 @@ class CustomerServiceTest {
         service = Retrofit.Builder()
             .baseUrl(mockWebServer.url("/"))
             .addConverterFactory(GsonConverterFactory.create())
-            .addCallAdapterFactory( RxJava2CallAdapterFactory.create())
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .build()
             .create(CustomerService::class.java)
     }
@@ -40,9 +40,15 @@ class CustomerServiceTest {
 
     @Test
     fun getCustomer() {
-        mockWebServer.enqueue(MockResponse().setBody("{\"email\": \"email@email.com\", " +
-                "\"lastName\" : \"kowalski\", \"firstName\": \"jan\"}"))
-        assertThat(CustomerDTO(email="email@email.com", lastName = "kowalski", firstName = "jan"),
-            equalTo(service.getUser().execute().body()))
+        mockWebServer.enqueue(
+            MockResponse().setBody(
+                "{\"email\": \"email@email.com\", " +
+                        "\"lastName\" : \"kowalski\", \"firstName\": \"jan\"}"
+            )
+        )
+        assertThat(
+            Customer(email = "email@email.com", lastName = "kowalski", firstName = "jan"),
+            equalTo(service.getUser().execute().body())
+        )
     }
 }
